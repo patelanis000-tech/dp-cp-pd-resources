@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Use, Academic Honesty and Teacher Judgment</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="deck" id="deck">
+  <section class="slide title-slide active" data-num="1">
+    <div class="title-block">
+      <div class="kicker">DP/CP Professional Development</div>
+      <h1>AI Use, Academic Honesty and Teacher Judgment</h1>
+      <p class="subtitle">31 July 2026</p>
+    </div>
+  </section>
+  <section class="slide" data-num="2">
+    <h2>Questions for the day</h2>
+    <div class="question-list">
+      <div class="question">What kinds of AI use are acceptable to SIS and to the IB?</div>
+      <div class="question">When does AI support cross into replacing the student’s own thinking or authorship?</div>
+      <div class="question">What evidence allows us to authenticate student work?</div>
+      <div class="question">How should teachers respond when AI use is unclear, undeclared or difficult to verify?</div>
+    </div>
+  </section>
+  <section class="slide" data-num="3">
+    <h2>Student guide: Green, Amber and Red</h2>
+    <div class="gar-layout">
+      <div class="gar-cards">
+        <div class="gar-card green selected" onclick="showGAR('green',this)"><h3>Green</h3><p>Generally acceptable</p></div>
+        <div class="gar-card amber" onclick="showGAR('amber',this)"><h3>Amber</h3><p>Ask first</p></div>
+        <div class="gar-card red" onclick="showGAR('red',this)"><h3>Red</h3><p>Not acceptable</p></div>
+      </div>
+      <div class="examples-panel" id="garPanel"></div>
+    </div>
+  </section>
+  <section class="slide" data-num="4">
+    <h2>What students must document</h2>
+    <div class="grid four">
+      <div class="card"><h3>Declaration</h3><p>Every submitted assessed work needs an accurate AI-use declaration.</p></div>
+      <div class="card"><h3>AI logbook</h3><p>When AI is used, students keep a brief record of the tool, prompt and use.</p></div>
+      <div class="card"><h3>Citation</h3><p>If AI-generated material appears in the work, cite it at the point of use.</p></div>
+      <div class="card"><h3>Process evidence</h3><p>Students retain drafts, notes, source records and version history.</p></div>
+    </div>
+    <div class="callout" style="margin-top:30px"><p class="big">Disclosure does not make a prohibited use acceptable. It helps us judge whether the work can still be authenticated.</p></div>
+  </section>
+  <section class="slide" data-num="5">
+    <h2>What teachers should do when concerned</h2>
+    <div class="flow-wrap">
+      <div>
+        <div class="flow">
+          <div class="step"><strong>Concern identified</strong><br/>The concern may come from a detector, missing disclosure, process gap or subject-specific inconsistency.</div>
+          <div class="arrow">↓</div>
+          <div class="step"><strong>Pause judgment</strong><br/>Do not treat suspicion or a score as proof. Preserve the submitted work and relevant records.</div>
+          <div class="arrow">↓</div>
+          <div class="step"><strong>Review available evidence</strong><br/>Check the declaration, logbook, citations, drafts, notes, sources, working and version history.</div>
+          <div class="arrow">↓</div>
+          <div class="step"><strong>Talk with the student before escalating</strong><br/>Ask them to explain how the work developed, what AI was used for and which decisions remained their own.</div>
+          <div class="arrow">↓</div>
+          <div class="decision">Can the work be reasonably authenticated?</div>
+          <div class="branch">
+            <div class="step yes"><strong>Yes</strong><br/>Clarify expectations, require corrections where appropriate and continue.</div>
+            <div class="step no"><strong>No / still unclear</strong><br/>Document the evidence and follow the formal review process.</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card compact">
+          <h3>Evidence teachers may review</h3>
+          <ul class="evidence-list">
+            <li>Student declaration and AI logbook</li>
+            <li>Drafts, notes and version history</li>
+            <li>Sources, citations and working</li>
+            <li>Student explanation of process and decisions</li>
+            <li>Comparison with previous authenticated work</li>
+          </ul>
+        </div>
+        <div class="principle"><p>No single item is proof. Consider the evidence together.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="slide" data-num="6">
+    <h2>Choose a controversial scenario</h2>
+    <div class="grid two">
+      <div class="card">
+        <h3>Choose one that...</h3>
+        <ul><li>is not immediately clear;</li><li>could reasonably be viewed differently;</li><li>raises a real question about support versus authorship;</li><li>could happen in our context.</li></ul>
+      </div>
+      <div class="card">
+        <h3>Discuss</h3>
+        <ul class="prompts"><li>What makes this case difficult?</li><li>Why might someone disagree?</li><li>When is the AI use acceptable?</li><li>When does it cross the boundary?</li><li>What should the teacher do next?</li></ul>
+      </div>
+    </div>
+  </section>
+  <section class="slide" data-num="7">
+    <h2>13 AI coursework scenarios</h2>
+    <p class="small">Use the printout for full detail. This is a quick reference.</p>
+    <div class="scenario-grid">
+      <div class="scenario-chip"><strong>1</strong> AI summarizes key points and suggests references.</div><div class="scenario-chip"><strong>2</strong> AI identifies counterarguments or alternative viewpoints.</div><div class="scenario-chip"><strong>3</strong> AI finds quotations the student copies without checking.</div><div class="scenario-chip"><strong>4</strong> AI develops the research question.</div><div class="scenario-chip"><strong>5</strong> AI writes a complete model essay.</div><div class="scenario-chip"><strong>6</strong> AI generates one or two model paragraphs.</div><div class="scenario-chip"><strong>7</strong> AI rewrites the student’s completed essay.</div><div class="scenario-chip"><strong>8</strong> AI translates the work into the submission language.</div><div class="scenario-chip"><strong>9</strong> AI suggests grammar and sentence improvements.</div><div class="scenario-chip"><strong>10</strong> AI marks the work and gives improvement feedback.</div><div class="scenario-chip"><strong>11</strong> AI writes a personal reflection.</div><div class="scenario-chip"><strong>12</strong> The student conceals their AI use.</div><div class="scenario-chip"><strong>13</strong> AI generates an essay structure or template.</div>
+    </div>
+  </section>
+  <section class="slide" data-num="8">
+    <h2>Group reveal: what did the IB decide?</h2>
+    <div class="group-reveal">
+      <div class="inputs">
+        <div class="input-row"><label>Group 1</label><select id="g1"></select></div><div class="input-row"><label>Group 2</label><select id="g2"></select></div><div class="input-row"><label>Group 3</label><select id="g3"></select></div><div class="input-row"><label>Group 4</label><select id="g4"></select></div>
+        <button class="reveal-btn" onclick="revealAllGroups()">Reveal IB decisions</button>
+        <p class="small" style="margin-top:14px">Enter the scenario number each group selected, then reveal once.</p>
+      </div>
+      <div class="results" id="groupResults"><div class="result-card"><h3>Group 1</h3><p class="small">Decision will appear here.</p></div><div class="result-card"><h3>Group 2</h3><p class="small">Decision will appear here.</p></div><div class="result-card"><h3>Group 3</h3><p class="small">Decision will appear here.</p></div><div class="result-card"><h3>Group 4</h3><p class="small">Decision will appear here.</p></div></div>
+    </div>
+  </section>
+  <section class="slide" data-num="9">
+    <h2>All 13 IB decisions</h2><p class="small">Click a number to reveal the IB decision and rationale.</p><div class="ib-grid" id="ibGrid"></div><div class="ib-detail" id="ibDetail"><h3>Select a scenario</h3><p>Use this slide to check decisions that generated discussion.</p></div>
+  </section>
+  <section class="slide" data-num="10">
+    <h2>Do we agree with the IB?</h2>
+    <div class="question-list"><div class="question">Which decisions were expected?</div><div class="question">Which decisions surprised us?</div><div class="question">Where might a teacher reasonably disagree?</div><div class="question">Is SIS guidance aligned with the IB, or does anything need clarification?</div></div>
+    <p class="sources">Sources: SIS DP/CP Student Guide; SIS DP/CP Internal Academic Integrity and AI Guidelines; IB Evaluating 13 scenarios of Artificial Intelligence in student coursework.</p>
+  </section>
+</div>
+<a class="home-link" href="../../">PD home</a><div class="nav"><button onclick="prevSlide()">←</button><button onclick="nextSlide()">→</button></div><div class="progress" id="progress"></div>
+<script src="script.js"></script>
+</body>
+</html>
