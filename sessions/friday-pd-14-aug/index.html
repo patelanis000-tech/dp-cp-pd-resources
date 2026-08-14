@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DP/CP Friday PD — 14 August</title>
+<style>
+  :root{
+    --bg:#f6f3ec;
+    --ink:#18202b;
+    --muted:#5e6875;
+    --panel:#ffffff;
+    --line:#ddd4c8;
+    --gold:#d49b28;
+    --blue:#274e73;
+    --blue2:#e9f1f8;
+    --green:#2c6a4b;
+    --green2:#e8f3ed;
+    --red:#9e3b2f;
+    --red2:#f8e8e4;
+    --shadow:0 22px 60px rgba(22,29,38,.16);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;overflow:hidden}
+  .deck{height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;padding:2.2vh 2vw}
+  .slide{width:min(94vw,1600px);height:min(88vh,900px);background:linear-gradient(145deg,#fff,#faf7f1);border:1px solid rgba(70,59,45,.12);box-shadow:var(--shadow);border-radius:26px;display:none;position:relative;overflow:hidden;padding:52px 62px 58px}
+  .slide.active{display:block;animation:fade .28s ease both}
+  @keyframes fade{from{opacity:.2;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .slide::after{content:"";position:absolute;right:-160px;bottom:-190px;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(212,155,40,.20),rgba(212,155,40,0) 64%);pointer-events:none}
+  .eyebrow{font-size:18px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:800;margin:0 0 12px}
+  h1{font-size:58px;line-height:1;margin:0 0 28px;font-weight:850;letter-spacing:-.035em}
+  h2{font-size:42px;line-height:1.1;margin:0;font-weight:820;letter-spacing:-.025em}
+  p{font-size:25px;line-height:1.36;margin:0;color:var(--muted)}
+  .row{display:grid;grid-template-columns:1.2fr .82fr;gap:34px;height:calc(100% - 96px)}
+  .panel{background:rgba(255,255,255,.82);border:1px solid var(--line);border-radius:24px;padding:25px;box-shadow:0 12px 30px rgba(25,32,43,.08)}
+  .section-title{font-size:28px;margin:0 0 16px;color:var(--blue);letter-spacing:-.015em}
+  .time-row{display:flex;gap:16px;margin-bottom:18px}.time-pill{flex:1;background:var(--blue);color:white;border-radius:20px;padding:18px 20px}.time-pill b{display:block;font-size:31px;line-height:1}.time-pill span{display:block;font-size:22px;margin-top:6px;opacity:.9}.time-pill.alt{background:var(--green)}
+  .rooms{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:18px}.room{border:1px solid #ded7cd;border-radius:18px;background:#fff;padding:16px 17px}.room strong{display:block;font-size:23px;line-height:1.05}.room span{display:block;margin-top:6px;color:var(--muted);font-size:17px}.room.soft{background:#fbf6e9;border-color:#ead9ac}.room.extra{background:#f5f5f3}
+  .quick{display:grid;gap:16px;margin-top:18px}.note{border-radius:18px;padding:15px 17px;background:var(--blue2);border:1px solid #cddbea;font-size:21px;color:var(--blue);font-weight:700}.note.warn{background:var(--red2);border-color:#efc9c2;color:var(--red)}
+  .ee h2{font-size:34px;margin-bottom:17px}.ee-line{display:flex;align-items:flex-start;gap:12px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:17px;margin-bottom:14px;font-size:22px;line-height:1.25}.arrow{color:var(--gold);font-weight:900}.muted-small{font-size:17px;color:var(--muted);line-height:1.3;margin-top:8px}
+  .resource-wrap{height:calc(100% - 96px);display:grid;grid-template-columns:.92fr 1fr;gap:42px;align-items:center}.resource-card{background:#fff;border:1px solid var(--line);border-radius:30px;padding:42px;box-shadow:0 18px 50px rgba(25,32,43,.11);position:relative;overflow:hidden}.resource-card::before{content:"IB";position:absolute;right:28px;top:18px;font-size:76px;font-weight:900;color:rgba(39,78,115,.08);letter-spacing:-.08em}.resource-card h2{font-size:50px;margin-bottom:18px}.resource-card p{font-size:27px;color:#354151}.resource-lines{display:grid;gap:18px}.resource-line{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.78);border:1px solid var(--line);border-radius:22px;padding:22px 24px;font-size:25px;line-height:1.25}.dot{width:12px;height:12px;background:var(--gold);border-radius:50%;margin-top:10px;flex:none}.button{display:inline-flex;align-items:center;justify-content:center;margin-top:30px;background:var(--blue);color:#fff;text-decoration:none;border-radius:18px;padding:17px 24px;font-size:22px;font-weight:780;box-shadow:0 12px 24px rgba(39,78,115,.20)}
+  .social{height:calc(100% - 96px);display:grid;grid-template-rows:auto 1fr auto;gap:26px}.statement{background:#17202c;color:white;border-radius:30px;padding:36px 42px;box-shadow:0 20px 48px rgba(23,32,44,.25)}.statement h2{font-size:54px;line-height:1.04;color:#fff}.statement p{color:#f3d89a;font-size:31px;margin-top:14px;font-weight:760}.strategy-wrap{background:#fff;border:1px solid var(--line);border-radius:28px;padding:26px 30px}.strategy-wrap h2{font-size:30px;margin-bottom:16px}.social-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:18px}.social-card{background:#f8f6f1;border:1px solid #e4dcd1;border-radius:18px;padding:17px 18px}.social-card h3{margin:0 0 10px;font-size:21px;color:var(--blue)}.social-card ul{margin:0;padding-left:20px}.social-card li{font-size:18px;line-height:1.25;margin:6px 0}.strategies{display:grid;grid-template-columns:1fr 1fr;gap:12px}.strategy{background:#f8f6f1;border:1px solid #e4dcd1;border-radius:16px;padding:14px 16px;font-size:18px;line-height:1.18}.question{background:var(--green);color:#fff;border-radius:24px;padding:22px 28px;font-size:31px;line-height:1.14;font-weight:800;text-align:center}.question span{display:block;font-size:20px;opacity:.82;font-weight:650;margin-bottom:5px;text-transform:uppercase;letter-spacing:.08em}.survey-link{display:inline-flex;align-items:center;justify-content:center;margin-top:14px;background:#fff;color:var(--green);text-decoration:none;border-radius:14px;padding:11px 17px;font-size:18px;font-weight:800;box-shadow:0 8px 18px rgba(0,0,0,.12)}
+
+  .center-slide{height:calc(100% - 96px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .center-slide h2{font-size:72px;line-height:1.02;margin:0 0 24px}
+  .center-slide p{max-width:950px;font-size:29px}
+  .atl-list{display:flex;gap:18px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+  .atl-chip{background:#fff;border:1px solid var(--line);border-radius:18px;padding:15px 22px;font-size:22px;font-weight:760;box-shadow:0 8px 20px rgba(25,32,43,.07)}
+  .survey-card{background:#fff;border:1px solid var(--line);border-radius:30px;padding:44px 54px;box-shadow:0 18px 50px rgba(25,32,43,.11);max-width:950px}
+  .survey-card h2{font-size:52px;margin-bottom:16px}
+  .survey-card p{font-size:26px;color:#354151}
+  .survey-card .button{font-size:25px;padding:18px 28px;margin-top:28px}
+
+  .footer{position:absolute;left:62px;right:62px;bottom:22px;display:flex;align-items:center;justify-content:space-between;color:#8c8174;font-size:15px}.progress{display:flex;gap:8px}.bar{width:34px;height:5px;border-radius:99px;background:#d8d0c5}.bar.on{background:var(--gold)}
+  .reveal{opacity:0;transform:translateY(10px);transition:.28s ease}.reveal.visible{opacity:1;transform:translateY(0)}
+  .nav{position:fixed;right:18px;bottom:16px;display:flex;gap:8px;z-index:10}.nav button{border:0;background:rgba(24,32,43,.86);color:white;border-radius:14px;padding:10px 14px;font-size:14px;cursor:pointer}.nav button:hover{background:#000}.hint{position:fixed;left:18px;bottom:16px;color:#93887b;font-size:13px;z-index:10}
+  .notes{display:none;position:absolute;left:62px;right:62px;bottom:58px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 22px;box-shadow:0 12px 30px rgba(25,32,43,.18);font-size:18px;line-height:1.35;color:#39424d;z-index:4}.notes.show{display:block}.notes b{color:var(--gold);text-transform:uppercase;letter-spacing:.08em;font-size:14px}
+  @media (max-width:1000px){.slide{padding:30px 34px}.row,.resource-wrap{grid-template-columns:1fr;height:auto}.rooms,.strategies{grid-template-columns:1fr}h1{font-size:42px}.statement h2{font-size:36px}.footer{left:34px;right:34px}.slide{overflow:auto}.deck{align-items:flex-start}.notes{left:34px;right:34px}}
+</style>
+</head>
+<body>
+<div class="deck">
+  <section class="slide active" data-slide="1" data-total-reveals="4">
+    <div class="eyebrow">DP/CP Friday PD</div>
+    <h1>Bookkeeping</h1>
+    <div class="row">
+      <div class="panel">
+        <h2 class="section-title">Language B Oral Assessments — Friday 21 August</h2>
+        <div class="time-row reveal visible" data-step="0">
+          <div class="time-pill"><b>8:00–9:30</b><span>English B / Chinese B</span></div>
+          <div class="time-pill alt"><b>8:00–10:00</b><span>Mandarin ab initio</span></div>
+        </div>
+        <div class="rooms reveal" data-step="1">
+          <div class="room soft"><strong>BG-01</strong><span>Waiting room</span></div>
+          <div class="room soft"><strong>Arts Room</strong><span>Mandarin ab initio</span></div>
+          <div class="room"><strong>BF-06</strong><span>Preparation / overflow</span></div>
+          <div class="room"><strong>Chemistry Lab</strong><span>English B</span></div>
+          <div class="room"><strong>Physics Lab</strong><span>Chinese B</span></div>
+          <div class="room extra"><strong>Biology Lab</strong><span>available if needed</span></div>
+        </div>
+        <div class="quick reveal" data-step="2">
+          <div class="note">Recording: microphones available from Daniel</div>
+          <div class="note">Please confirm covers and student reporting arrangements.</div>
+        </div>
+      </div>
+      <div class="panel ee reveal" data-step="3">
+        <h2>EE reminder</h2>
+        <div class="ee-line"><span>Draft submitted</span><span class="arrow">→</span><strong>please give feedback promptly.</strong></div>
+        <div class="ee-line"><span>Final submitted</span><span class="arrow">→</span><strong>please grade promptly and arrange the viva voce as soon as possible.</strong></div>
+        <div class="note warn">Time-sensitive: we are running out of time.</div>
+      </div>
+    </div>
+    <div class="notes"><b>Speaker notes</b><br>Open directly here; no agenda slide. Present the room plan as proposed, not final. Mention that the Arts Room and BF-06 give the most flexibility. Keep the EE reminder brief and urgent without sounding dramatic.</div>
+    <div class="footer"><span>Slide 1 / 5</span><div class="progress"><span class="bar on"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div></div>
+  </section>
+
+  <section class="slide" data-slide="2" data-total-reveals="3">
+    <div class="eyebrow">Teacher Resource Highlight</div>
+    <h1>IB Resource Highlight</h1>
+    <div class="resource-wrap">
+      <div class="resource-card reveal visible" data-step="0">
+        <h2>IB Free Learning — Nano PD</h2>
+        <p>Short, official IB professional learning you can use independently.</p>
+        <a class="button reveal" data-step="2" href="https://www.ibo.org/professional-development/free-learning/what-is-an-ib-education/" target="_blank" rel="noopener">Open IB Free Learning ↗</a>
+      </div>
+      <div class="resource-lines reveal" data-step="1">
+        <div class="resource-line"><span class="dot"></span><span>Explore short interactive resources.</span></div>
+        <div class="resource-line"><span class="dot"></span><span>Choose a topic: ATL, inquiry, international-mindedness, inclusion and more.</span></div>
+        <div class="resource-line"><span class="dot"></span><span>Use it when you want a quick IB teaching refresh.</span></div>
+      </div>
+    </div>
+    <div class="notes"><b>Speaker notes</b><br>Treat this as a tool highlight, not a website tour. If the page is already open and loads immediately, show it briefly; otherwise just point staff to the link.</div>
+    <div class="footer"><span>Slide 2 / 5</span><div class="progress"><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div></div>
+  </section>
+
+  <section class="slide" data-slide="3" data-total-reveals="4">
+    <div class="eyebrow">Approaches to Learning</div>
+    <h1>Social ATL</h1>
+    <div class="social">
+      <div class="statement reveal visible" data-step="0">
+        <h2>Group work does not automatically build social skills.</h2>
+        <p>Teach the collaboration you want to see.</p>
+      </div>
+
+      <div class="strategy-wrap reveal" data-step="1">
+        <div class="social-grid">
+          <div class="social-card">
+            <h3>What are we actually teaching?</h3>
+            <ul>
+              <li>Listening to others</li>
+              <li>Building on ideas</li>
+              <li>Disagreeing respectfully</li>
+              <li>Sharing responsibility</li>
+              <li>Making decisions together</li>
+            </ul>
+          </div>
+
+          <div class="social-card">
+            <h3>What can teachers do?</h3>
+            <div class="strategies">
+              <div class="strategy">Use rotating group roles.</div>
+              <div class="strategy">Give sentence stems for disagreement.</div>
+              <div class="strategy">Ask students to paraphrase before responding.</div>
+              <div class="strategy reveal" data-step="2">Require every member to explain the group’s decision.</div>
+              <div class="strategy reveal" data-step="2">Pause midway: “How well are we working together?”</div>
+              <div class="strategy reveal" data-step="2">Assess the process as well as the final product.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="question reveal" data-step="3"><span>Closing question</span>What is one social skill you could deliberately teach next time students work together?</div>
+    </div>
+    <div class="notes"><b>Speaker notes</b><br>Keep this practical. Social ATL includes smaller teachable behaviours: listening, contributing, managing disagreement, sharing responsibility and making decisions. Give one quick classroom example: before students disagree, require them to paraphrase the previous speaker's point accurately. Emphasize that teachers can make the social process visible and assessable, not just the final group product.</div>
+    <div class="footer"><span>Slide 3 / 5</span><div class="progress"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span><span class="bar"></span></div></div>
+  </section>
+
+  <section class="slide" data-slide="4" data-total-reveals="1">
+    <div class="eyebrow">Approaches to Learning</div>
+    <h1>Group Presentations</h1>
+    <div class="center-slide">
+      <h2>Group Presentations</h2>
+      <p>Each group shares its ATL category using the common questions and IB sources.</p>
+      <div class="atl-list">
+        <div class="atl-chip">Research</div>
+        <div class="atl-chip">Communication</div>
+        <div class="atl-chip">Social</div>
+        <div class="atl-chip">Self-management</div>
+      </div>
+    </div>
+    <div class="notes"><b>Speaker notes</b><br>Use this as the transition into the staff group presentations. Keep it on screen while groups present if useful.</div>
+    <div class="footer"><span>Slide 4 / 5</span><div class="progress"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar"></span></div></div>
+  </section>
+
+  <section class="slide" data-slide="5" data-total-reveals="1">
+    <div class="eyebrow">Approaches to Learning</div>
+    <h1>ATL Survey</h1>
+    <div class="center-slide">
+      <div class="survey-card">
+        <h2>Complete the DP/CP ATL Survey</h2>
+        <p>Please complete the survey now that all ATL presentations are finished.</p>
+        <a class="button" href="https://forms.cloud.microsoft/r/DJDh5HNuhd" target="_blank" rel="noopener">Open DP/CP ATL Survey ↗</a>
+      </div>
+    </div>
+    <div class="notes"><b>Speaker notes</b><br>Give staff a few minutes to complete the survey immediately after the final group presentation.</div>
+    <div class="footer"><span>Slide 5 / 5</span><div class="progress"><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span><span class="bar on"></span></div></div>
+  </section>
+</div>
+<div class="hint"><a href="../../" style="color:inherit;font-weight:700;text-decoration:none">PD home</a> · Space/→ reveal · ← back · N notes · F fullscreen</div>
+
+<div class="nav"><button id="prev">Back</button><button id="next">Next</button><button id="notes">Notes</button></div>
+<script>
+  const slides=[...document.querySelectorAll('.slide')];
+  let index=0; let step=0;
+  function current(){return slides[index]}
+  function maxStep(){return Number(current().dataset.totalReveals||1)-1}
+  function update(){
+    slides.forEach((s,i)=>s.classList.toggle('active',i===index));
+    current().querySelectorAll('.reveal').forEach(el=>{
+      const needed=Number(el.dataset.step||0);
+      el.classList.toggle('visible',needed<=step);
+    });
+  }
+  function next(){ if(step<maxStep()){step++;} else if(index<slides.length-1){index++;step=0;} update(); }
+  function prev(){ if(step>0){step--;} else if(index>0){index--;step=maxStep();} update(); }
+  document.getElementById('next').onclick=next; document.getElementById('prev').onclick=prev;
+  document.getElementById('notes').onclick=()=>current().querySelector('.notes')?.classList.toggle('show');
+  document.addEventListener('keydown',e=>{
+    if(['ArrowRight',' ','PageDown'].includes(e.key)){e.preventDefault();next();}
+    if(['ArrowLeft','PageUp'].includes(e.key)){e.preventDefault();prev();}
+    if(e.key.toLowerCase()==='n'){current().querySelector('.notes')?.classList.toggle('show');}
+    if(e.key.toLowerCase()==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}
+  });
+  update();
+</script>
+</body>
+</html>
