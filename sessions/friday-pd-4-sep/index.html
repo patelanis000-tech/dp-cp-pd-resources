@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DP/CP Friday PD — 4 September 2026</title>
+<style>
+  :root{
+    --bg:#07111f;
+    --panel:#0d1b2a;
+    --panel2:#10243a;
+    --text:#f7fbff;
+    --muted:#a8bacb;
+    --accent:#55c2ff;
+    --accent2:#8be0c1;
+    --line:rgba(255,255,255,.11);
+    --shadow:0 18px 60px rgba(0,0,0,.28);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(85,194,255,.18), transparent 26%),
+      radial-gradient(circle at 88% 82%, rgba(139,224,193,.12), transparent 24%),
+      var(--bg);
+    color:var(--text);
+    overflow:hidden
+  }
+  .slide{
+    display:none;
+    height:100vh;
+    padding:7vh 7.5vw 10vh;
+    background:linear-gradient(180deg, rgba(255,255,255,.018), rgba(255,255,255,0));
+  }
+  .slide.active{display:block;animation:fade .28s ease}
+  @keyframes fade{from{opacity:.25;transform:translateY(6px)}to{opacity:1;transform:none}}
+  h1{font-size:4rem;line-height:1;margin:0 0 1rem;letter-spacing:-.04em}
+  h2{font-size:2.75rem;line-height:1.05;margin:0 0 1.5rem;letter-spacing:-.03em}
+  h3{font-size:1.25rem;margin:.1rem 0 .7rem;color:var(--accent)}
+  p,li{font-size:1.36rem;line-height:1.45}
+  ul{padding-left:1.4rem;margin-top:.6rem}
+  li{margin:.42rem 0}
+  .big{font-size:2rem;font-weight:800;color:var(--accent)}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem}
+  .box{
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:1.5rem 1.6rem;
+    background:linear-gradient(180deg,rgba(255,255,255,.055),rgba(255,255,255,.025));
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(8px)
+  }
+  .note{
+    margin-top:1.35rem;
+    padding:1rem 1.2rem;
+    border-radius:14px;
+    background:linear-gradient(90deg,rgba(85,194,255,.16),rgba(139,224,193,.08));
+    border:1px solid rgba(85,194,255,.18);
+    font-size:1.25rem;
+    font-weight:800
+  }
+  table{border-collapse:collapse;width:100%;font-size:1.14rem}
+  th,td{padding:.68rem .75rem;border-bottom:1px solid var(--line);text-align:left}
+  th{color:var(--muted);font-size:.95rem;text-transform:uppercase;letter-spacing:.06em}
+  td:last-child,th:last-child{text-align:center;font-weight:800}
+  .quote{
+    font-size:1.18rem;
+    line-height:1.4;
+    margin:.65rem 0;
+    padding:.8rem 1rem;
+    border-left:3px solid var(--accent2);
+    background:rgba(255,255,255,.035);
+    border-radius:0 12px 12px 0
+  }
+  .footer{
+    position:fixed;
+    bottom:18px;
+    left:7.5vw;
+    right:7.5vw;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:var(--muted)
+  }
+  button{
+    font-size:1rem;
+    padding:.5rem .8rem;
+    border:1px solid var(--line);
+    border-radius:10px;
+    background:rgba(255,255,255,.06);
+    color:var(--text);
+    cursor:pointer
+  }
+  button:hover{border-color:var(--accent);background:rgba(85,194,255,.10)}
+  a{color:var(--text);text-decoration:none;font-weight:800}
+  a.buttonlink{
+    display:inline-block;
+    margin-top:.55rem;
+    padding:.8rem 1rem;
+    border-radius:12px;
+    background:linear-gradient(90deg,var(--accent),#4a9cff);
+    color:#06111c;
+    box-shadow:0 10px 30px rgba(85,194,255,.2)
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:.14em;
+    color:var(--accent2);
+    font-size:.82rem;
+    font-weight:800;
+    margin-bottom:1rem
+  }
+  @media (max-width:850px){
+    h1{font-size:3rem}
+    h2{font-size:2.2rem}
+    .cols{grid-template-columns:1fr}
+    p,li{font-size:1.15rem}
+  }
+</style>
+</head>
+<body>
+<div class="slide active">
+  <div class="eyebrow">Friday coordination</div>
+  <h1>DP/CP Friday PD</h1>
+  <p class="big">4 September 2026</p>
+  <ul>
+    <li>Mock exam readiness</li>
+    <li>ATL evidence</li>
+    <li>One practical classroom response</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h2>Housekeeping</h2>
+  <div class="box">
+    <h3>Mocks</h3>
+    <ul>
+      <li>Mock exams: <b>21–30 September</b></li>
+      <li>Paper submission: <b>11 September</b></li>
+      <li>Provisional timetable ready for review</li>
+      <li>Invigilation comes later</li>
+    </ul>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Mock timetable review</h2>
+  <p><b>Check your subjects only:</b></p>
+  <ul>
+    <li>All papers/components present</li>
+    <li>HL / SL correct</li>
+    <li>Duration correct</li>
+    <li>Sequencing sensible</li>
+    <li>Listening / room / equipment requirements</li>
+  </ul>
+  <div class="note">Ignore invigilation for now.</div>
+</div>
+
+<div class="slide">
+  <h2>What the ATL evidence is saying</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>Students — 29 responses</h3>
+      <table>
+        <tr><th>ATL area</th><th>Selections</th></tr>
+        <tr><td><b>Self-management</b></td><td><b>17</b></td></tr>
+        <tr><td><b>Thinking</b></td><td><b>17</b></td></tr>
+        <tr><td>Communication</td><td>12</td></tr>
+        <tr><td>Research</td><td>9</td></tr>
+        <tr><td>Social</td><td>7</td></tr>
+      </table>
+    </div>
+    <div class="box">
+      <h3>Teachers — 13 responses</h3>
+      <ul>
+        <li><b>Self-management:</b> #1 for 7/13; top two for 9/13</li>
+        <li><b>Thinking:</b> top two for 7/13</li>
+        <li><b>Communication:</b> top two for 7/13</li>
+      </ul>
+      <p><b>Broad convergence:</b> Self-management + Thinking are emerging strongly.</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>Student voice — anonymous excerpts</h2>
+  <div class="box">
+    <div class="quote">“Organizing time.”</div>
+    <div class="quote">“Self management for managing time and revision.”</div>
+    <div class="quote">“Critical thinking and application.”</div>
+    <div class="quote">“Applying familiar concepts to novel, high stakes exam questions under time pressure.”</div>
+    <div class="quote">“Provide more practice.”</div>
+    <div class="quote">“Teachers could provide a framework of responses to make it easier to structure or construct personal thoughts or opinions.”</div>
+    <a class="buttonlink" href="https://docs.google.com/spreadsheets/d/1qzRqBkZa_2wF8kO0p-0Mj3H9fS6APMIgGjtPkB-BGhs/edit?usp=sharing" target="_blank">Open raw student responses ↗</a>
+  </div>
+</div>
+
+<div class="slide">
+  <h2>From evidence to practice</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>SELF-MANAGEMENT</h3>
+      <p>How can we help students better plan, manage deadlines, revise and work independently?</p>
+    </div>
+    <div class="box">
+      <h3>THINKING</h3>
+      <p>How can we help students better analyse, apply knowledge, tackle unfamiliar questions and justify?</p>
+    </div>
+  </div>
+  <div class="note">In groups: 1 thing we already do well + 1 practical strategy we could use more consistently.</div>
+</div>
+
+<div class="slide">
+  <div class="eyebrow">Quick close</div>
+  <h2>That’s it.</h2>
+  <div class="cols">
+    <div class="box">
+      <h3>Mocks</h3>
+      <p>Check your subject entries and flag anything that needs correcting.</p>
+      <p><b>Paper submission deadline: 11 September</b></p>
+    </div>
+    <div class="box">
+      <h3>ATL</h3>
+      <p>Take one useful idea from the discussion into your teaching.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <span id="count">1 / 7</span>
+  <div>
+    <button onclick="prev()">◀</button>
+    <button onclick="next()">▶</button>
+  </div>
+</div>
+
+<script>
+let i=0;
+const slides=[...document.querySelectorAll('.slide')];
+function show(n){
+  i=(n+slides.length)%slides.length;
+  slides.forEach((s,j)=>s.classList.toggle('active',j===i));
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+}
+function next(){show(i+1)}
+function prev(){show(i-1)}
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)) next();
+  if(['ArrowLeft','PageUp'].includes(e.key)) prev();
+});
+</script>
+</body>
+</html>
