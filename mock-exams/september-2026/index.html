@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>DP/CP Mock Exam Invigilation Timetable</title>
+<style>
+:root {
+  --ink:#172033; --muted:#697386; --line:#dbe1ea; --paper:#f6f8fb;
+  --navy:#213e6d; --navy-soft:#edf3fc; --purple:#f2edff; --purple-line:#c1afea;
+  --yellow:#fff6d9; --yellow-line:#dfc36c; --yellow-ink:#6b5416;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1200px;margin:auto;padding:24px 16px 64px}
+.hero{background:white;border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-bottom:24px}
+.hero h1{margin:0 0 5px;font-size:30px;letter-spacing:-.025em}
+.hero p{margin:5px 0;color:var(--muted)}
+.day{margin:28px 0 40px}
+.day h2{margin:0 0 12px;padding-bottom:8px;border-bottom:2px solid var(--navy);font-size:23px}
+.session{background:white;border:1px solid var(--line);border-radius:15px;padding:14px;margin:14px 0 18px}
+.session-label{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--navy);margin-bottom:10px}
+.simple-grid{display:grid;grid-template-columns:2.15fr 1fr 1fr;gap:10px}
+.exam-panel,.staff-panel{border:1px solid #e3e8ef;border-radius:12px;padding:10px;background:#fcfdff}
+.exam-panel{background:var(--navy-soft);border-color:#c2d0e7}
+.panel-head,.mini-label{font-size:10px;font-weight:900;letter-spacing:.08em;color:#59647a;margin-bottom:8px}
+.shared-label{color:var(--yellow-ink)}
+.room-chip{display:inline-block;padding:5px 8px;border-radius:999px;background:#dfe9fa;color:var(--navy);font-size:10px;font-weight:900;letter-spacing:.04em;margin-bottom:8px}
+.room-chip.purple{background:#e4dbff;color:#5d4197}
+.exam-list{display:grid;gap:5px}
+.exam-row{display:grid;grid-template-columns:48px 1fr;gap:8px;align-items:start}
+.exam-row .start{font-size:11px;font-weight:900;color:var(--navy)}
+.exam-row .exam-name{font-size:12px;font-weight:750;line-height:1.25}
+.duty-stack{display:flex;flex-direction:column;gap:6px}
+.duty{min-height:52px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;background:white;border:1px solid #dce3ed;border-radius:9px;padding:8px}
+.duty.shared{background:var(--yellow);border-color:var(--yellow-line);color:var(--yellow-ink)}
+.duty strong{font-size:15px}
+.duty span{font-size:11px;color:var(--muted);margin-top:3px;font-weight:700}
+.duty.shared span{color:#80661f}
+.double-head{display:grid;grid-template-columns:2.15fr 1fr 1fr;gap:10px;margin-bottom:6px}
+.double-head span{font-size:10px;font-weight:900;letter-spacing:.08em;color:#59647a;padding:0 4px}
+.double-wrap{display:grid;gap:10px}
+.double-block{display:grid;grid-template-columns:2.15fr 1fr 1fr;gap:10px}
+.double-exams,.double-staff{border:1px solid var(--purple-line);border-radius:12px;padding:10px;background:var(--purple)}
+.double-staff{display:flex}
+.double-staff .duty-stack{width:100%}
+.room-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
+.room-card{border:1px solid #dce3ed;border-radius:12px;padding:10px;background:#fbfcff}
+.room-card.wide{grid-column:span 2}
+.coverage-grid,.two-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.coverage-grid>div,.two-mini>div{display:flex;flex-direction:column}
+.coverage-grid .duty,.two-mini .duty{min-height:44px}
+@media(max-width:800px){
+  .simple-grid,.double-head,.double-block{grid-template-columns:1fr}
+  .double-head{display:none}
+  .room-card.wide{grid-column:auto}
+  .coverage-grid,.two-mini{grid-template-columns:1fr}
+}
+@media print{
+  body{background:white}
+  .wrap{max-width:none;padding:0}
+  .day{break-inside:avoid}
+}
+
+.exam-time-group{
+  display:grid;
+  grid-template-columns:52px 1fr;
+  gap:8px;
+  align-items:start;
+  padding:4px 0;
+}
+.exam-time-group + .exam-time-group{
+  margin-top:7px;
+  padding-top:9px;
+  border-top:1px solid rgba(66,86,120,.12);
+}
+.exam-time{
+  font-size:11px;
+  font-weight:950;
+  color:var(--navy);
+  line-height:1.25;
+}
+.exam-group-names{
+  display:grid;
+  gap:4px;
+}
+.exam-group-name{
+  font-size:12px;
+  font-weight:750;
+  line-height:1.25;
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="hero">
+<h1>DP/CP Mock Exam Invigilation Timetable</h1>
+<p><strong>21–30 September 2026</strong></p>
+<p>Exam start times are grouped once per set of papers. Invigilation blocks show exact duty times.</p>
+</header>
+<section class="day"><h2>Monday, 21 September 2026</h2>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Biology HL — Paper 1</div><div class="exam-group-name">Biology SL — Paper 1</div><div class="exam-group-name">ESS SL — Paper 1</div><div class="exam-group-name">Physics HL — Paper 1</div><div class="exam-group-name">Physics SL — Paper 1</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Anis</strong><span>12:20–13:20</span></div><div class="duty"><strong>Bill</strong><span>13:20–14:20</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Balajee</strong><span>12:20–13:20</span></div><div class="duty"><strong>Wang Zhuo</strong><span>13:20–14:20</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Tuesday, 22 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Biology HL — Paper 2</div><div class="exam-group-name">Biology SL — Paper 2</div><div class="exam-group-name">ESS SL — Paper 2</div><div class="exam-group-name">Physics HL — Paper 2</div><div class="exam-group-name">Physics SL — Paper 2</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Emihle</strong><span>08:00–08:55</span></div><div class="duty"><strong>Erick</strong><span>08:55–09:40</span></div><div class="duty"><strong>Jeff</strong><span>09:40–10:30</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Jeff</strong><span>08:00–08:55</span></div><div class="duty"><strong>Z</strong><span>08:55–09:40</span></div><div class="duty"><strong>Balajee</strong><span>09:40–10:30</span></div></div></div>
+</div>
+</div>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Business Management HL — Paper 1</div><div class="exam-group-name">Business Management SL — Paper 1</div><div class="exam-group-name">Psychology HL — Paper 1</div><div class="exam-group-name">Psychology SL — Paper 1</div></div></div><div class="exam-time-group"><div class="exam-time">14:05</div><div class="exam-group-names"><div class="exam-group-name">Business Management HL — Paper 3</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:05</span></div><div class="duty"><strong>Alec</strong><span>13:05–13:50</span></div><div class="duty"><strong>Chong</strong><span>13:50–14:35</span></div><div class="duty"><strong>Alec</strong><span>14:35–15:20</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>12:20–13:05</span></div><div class="duty"><strong>Bill</strong><span>13:05–13:50</span></div><div class="duty"><strong>Sim Wei</strong><span>13:50–14:35</span></div><div class="duty"><strong>Hajira</strong><span>14:35–15:20</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Wednesday, 23 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING · DOUBLE ROOM</div>
+<div class="double-head"><span>EXAM / DOUBLE ROOM</span><span>INVIGILATOR 1</span><span>INVIGILATOR 2</span></div>
+<div class="double-wrap">
+<div class="double-block">
+<div class="double-exams">
+<div class="room-chip purple">BF-02 + BF-04 · DOUBLE ROOM</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Business Management HL — Paper 2</div><div class="exam-group-name">Business Management SL — Paper 2</div><div class="exam-group-name">Psychology HL — Paper 2</div><div class="exam-group-name">Psychology SL — Paper 2</div></div></div></div>
+</div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>John</strong><span>08:00–10:00</span></div></div></div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>08:00–10:00</span></div></div></div>
+</div>
+<div class="double-block">
+<div class="double-exams">
+<div class="room-chip purple">BF-02 + BF-04 · DOUBLE ROOM</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">10:15</div><div class="exam-group-names"><div class="exam-group-name">Psychology HL — Paper 3</div></div></div></div>
+</div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>Michaela</strong><span>10:15–11:15</span></div></div></div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>Justin</strong><span>10:15–11:15</span></div></div></div>
+</div></div>
+</div>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:30</div><div class="exam-group-names"><div class="exam-group-name">English A HL — Paper 1</div><div class="exam-group-name">English A SL — Paper 1</div><div class="exam-group-name">English B HL — Paper 1 (Writing)</div><div class="exam-group-name">English B SL — Paper 1 (Writing)</div></div></div><div class="exam-time-group"><div class="exam-time">14:15</div><div class="exam-group-names"><div class="exam-group-name">English B HL — Paper 2 (Reading)</div><div class="exam-group-name">English B SL — Paper 2 (Reading)</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>12:30–13:25</span></div><div class="duty"><strong>Anis</strong><span>13:25–14:20</span></div><div class="duty"><strong>Z</strong><span>14:20–15:15</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Emihle</strong><span>12:30–13:25</span></div><div class="duty"><strong>Erick</strong><span>13:25–14:20</span></div><div class="duty"><strong>Michaela</strong><span>14:20–15:15</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Thursday, 24 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING · PARALLEL ROOMS</div>
+<div class="room-grid">
+<div class="room-card">
+<div class="room-chip">BF-02</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">English B SL — Paper 2 (Listening)</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>Hajira</strong><span>08:00–08:45</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Michaela</strong><span>08:00–09:00</span></div></div>
+</div>
+</div>
+</div>
+<div class="room-card">
+<div class="room-chip">BF-04</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">English B HL — Paper 2 (Listening)</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>Anis</strong><span>08:00–09:00</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Michaela</strong><span>08:00–09:00</span></div></div>
+</div>
+</div>
+</div>
+<div class="room-card wide">
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">English A HL — Paper 2</div><div class="exam-group-name">English A SL — Paper 2</div></div></div></div>
+<div class="two-mini">
+<div><div class="mini-label">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Sumi</strong><span>08:00–08:55</span></div><div class="duty"><strong>Z</strong><span>08:55–09:45</span></div></div></div>
+<div><div class="mini-label">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Erick</strong><span>08:00–08:55</span></div><div class="duty"><strong>Emihle</strong><span>08:55–09:45</span></div></div></div>
+</div>
+</div></div>
+</div>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Chinese A: Language &amp; Literature SL — Paper 1</div><div class="exam-group-name">Chinese B Mandarin SL — Paper 1 (Writing)</div><div class="exam-group-name">French ab initio SL — Paper 1 (Writing)</div><div class="exam-group-name">Japanese A: Literature SL — Paper 1</div><div class="exam-group-name">Mandarin ab initio SL — Paper 1 (Writing)</div></div></div><div class="exam-time-group"><div class="exam-time">13:35</div><div class="exam-group-names"><div class="exam-group-name">French ab initio SL — Paper 2 (Reading)</div><div class="exam-group-name">Mandarin ab initio SL — Paper 2 (Reading)</div></div></div><div class="exam-time-group"><div class="exam-time">13:50</div><div class="exam-group-names"><div class="exam-group-name">Chinese B Mandarin SL — Paper 2 (Reading)</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Erick</strong><span>12:20–13:05</span></div><div class="duty"><strong>Hajira</strong><span>13:05–13:50</span></div><div class="duty"><strong>Wang Zhuo</strong><span>13:50–14:50</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:05</span></div><div class="duty"><strong>Sumi</strong><span>13:05–13:50</span></div><div class="duty"><strong>Alec</strong><span>13:50–14:50</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Friday, 25 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING · FOUR SEPARATE ROOMS</div>
+<div class="room-grid">
+<div class="room-card">
+<div class="room-chip">BF-01</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Chinese A: Language &amp; Literature SL — Paper 2</div><div class="exam-group-name">Japanese A: Literature SL — Paper 2</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>Justin</strong><span>08:00–09:45</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Sim Wei</strong><span>08:00–09:45</span></div></div>
+</div>
+</div>
+</div>
+<div class="room-card">
+<div class="room-chip">BF-02</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Chinese B Mandarin SL — Paper 2 (Listening)</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>John</strong><span>08:00–08:45</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Sim Wei</strong><span>08:00–09:45</span></div></div>
+</div>
+</div>
+</div>
+<div class="room-card">
+<div class="room-chip">BF-03</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Mandarin ab initio SL — Paper 2 (Listening)</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>Hajira</strong><span>08:00–08:45</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Sim Wei</strong><span>08:00–09:45</span></div></div>
+</div>
+</div>
+</div>
+<div class="room-card">
+<div class="room-chip">BF-04</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">French ab initio SL — Paper 2 (Listening)</div></div></div></div>
+<div class="coverage-grid">
+<div>
+<div class="mini-label">DEDICATED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty"><strong>Erick</strong><span>08:00–08:45</span></div></div>
+</div>
+<div>
+<div class="mini-label shared-label">SHARED INVIGILATOR</div>
+<div class="duty-stack"><div class="duty shared"><strong>Sim Wei</strong><span>08:00–09:45</span></div></div>
+</div>
+</div>
+</div></div>
+</div></section><section class="day"><h2>Monday, 28 September 2026</h2>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Mathematics AA HL — Paper 1</div><div class="exam-group-name">Mathematics AA SL — Paper 1</div><div class="exam-group-name">Mathematics AI HL — Paper 1</div><div class="exam-group-name">Mathematics AI SL — Paper 1</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Balajee</strong><span>12:20–13:20</span></div><div class="duty"><strong>Bill</strong><span>13:20–14:20</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Michaela</strong><span>12:20–13:20</span></div><div class="duty"><strong>Wang Zhuo</strong><span>13:20–14:20</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Tuesday, 29 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Mathematics AA HL — Paper 2</div><div class="exam-group-name">Mathematics AA SL — Paper 2</div><div class="exam-group-name">Mathematics AI HL — Paper 2</div><div class="exam-group-name">Mathematics AI SL — Paper 2</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Emihle</strong><span>08:00–09:00</span></div><div class="duty"><strong>Bill</strong><span>09:00–10:00</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Wang Zhuo</strong><span>08:00–09:00</span></div><div class="duty"><strong>Balajee</strong><span>09:00–10:00</span></div></div></div>
+</div>
+</div>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Chemistry HL — Paper 1</div><div class="exam-group-name">Chemistry SL — Paper 1</div><div class="exam-group-name">Economics HL — Paper 2</div><div class="exam-group-name">Economics SL — Paper 2</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:20</span></div><div class="duty"><strong>Hajira</strong><span>13:20–14:20</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Sumi</strong><span>12:20–13:20</span></div><div class="duty"><strong>Sim Wei</strong><span>13:20–14:20</span></div></div></div>
+</div>
+</div></section><section class="day"><h2>Wednesday, 30 September 2026</h2>
+<div class="session">
+<div class="session-label">MORNING</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Chemistry HL — Paper 2</div><div class="exam-group-name">Chemistry SL — Paper 2</div><div class="exam-group-name">Economics HL — Paper 1</div><div class="exam-group-name">Economics SL — Paper 1</div></div></div><div class="exam-time-group"><div class="exam-time">09:30</div><div class="exam-group-names"><div class="exam-group-name">Economics HL — Paper 3</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>John</strong><span>08:00–08:55</span></div><div class="duty"><strong>Z</strong><span>08:55–09:40</span></div><div class="duty"><strong>Jeff</strong><span>09:40–10:25</span></div><div class="duty"><strong>Z</strong><span>10:25–11:15</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>08:00–08:55</span></div><div class="duty"><strong>Ryan B</strong><span>08:55–09:40</span></div><div class="duty"><strong>Sim Wei</strong><span>09:40–10:25</span></div><div class="duty"><strong>Justin</strong><span>10:25–11:15</span></div></div></div>
+</div>
+</div>
+<div class="session">
+<div class="session-label">AFTERNOON</div>
+<div class="simple-grid">
+<div class="exam-panel">
+<div class="panel-head">EXAM / ROOM</div>
+<div class="room-chip">MPH</div>
+<div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Mathematics AA HL — Paper 3</div><div class="exam-group-name">Mathematics AI HL — Paper 3</div></div></div></div>
+</div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Alec</strong><span>12:20–13:35</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Sumi</strong><span>12:20–13:35</span></div></div></div>
+</div>
+</div></section>
+</div>
+</body>
+</html>
