@@ -45,11 +45,14 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 .double-exams,.double-staff{border:1px solid var(--purple-line);border-radius:12px;padding:10px;background:var(--purple)}
 .double-staff{display:flex}
 .double-staff .duty-stack{width:100%}
-.room-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px}
-.room-card{border:1px solid #dce3ed;border-radius:12px;padding:10px;background:#fbfcff}
+.room-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;align-items:stretch}
+.room-card{display:flex;flex-direction:column;border:1px solid #dce3ed;border-radius:12px;padding:10px;background:#fbfcff}
 .room-card.wide{grid-column:span 2}
 .coverage-grid,.two-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.room-card>.coverage-grid,.room-card>.two-mini{margin-top:auto;padding-top:10px}
 .coverage-grid>div,.two-mini>div{display:flex;flex-direction:column}
+.coverage-grid .duty-stack,.two-mini .duty-stack{flex:1}
+.coverage-grid .duty,.two-mini .duty{height:100%}
 .coverage-grid .duty,.two-mini .duty{min-height:44px}
 @media(max-width:800px){
   .simple-grid,.double-head,.double-block{grid-template-columns:1fr}
@@ -90,6 +93,30 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
   font-weight:750;
   line-height:1.25;
 }
+.status-note{margin-top:12px!important;padding:10px 12px;border-radius:10px;background:#eef7f1;color:#28563a!important;border:1px solid #bfdac8;font-size:13px;font-weight:700}
+.relocations{margin-top:52px}
+.relocations>h2{margin:0 0 8px;font-size:28px;letter-spacing:-.02em}
+.relocations>.intro{margin:0 0 22px;padding:14px 16px;border:1px solid #c2d0e7;border-radius:12px;background:var(--navy-soft);color:#35445d;line-height:1.45}
+.relocations h3{margin:24px 0 8px;padding-bottom:7px;border-bottom:2px solid var(--navy);font-size:18px}
+.relocation-table{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:white}
+.relocation-row{display:grid;grid-template-columns:130px 2fr 130px 140px 1.25fr;align-items:center}
+.relocation-row>span{min-width:0;padding:9px 10px;border-bottom:1px solid #e5e9ef;font-size:12px;line-height:1.3}
+.relocation-row:last-child>span{border-bottom:0}
+.relocation-row small{display:block;margin-top:2px;color:var(--muted);font-size:11px}
+.relocation-head{background:var(--navy);color:white}
+.relocation-head>span{border-bottom:0;font-size:10px;font-weight:900;letter-spacing:.06em}
+.destination{display:inline-block;padding:4px 8px;border-radius:999px;background:#e6f4ea;color:#235b37}
+@media(max-width:800px){
+  .relocation-table{overflow-x:auto}
+  .relocation-row{min-width:740px}
+}
+@media print{
+  .relocations{break-before:page}
+  .relocation-table{break-inside:avoid}
+  .relocation-row{grid-template-columns:105px 2fr 105px 115px 1.15fr}
+  .relocation-row>span{padding:6px 7px;font-size:10px}
+  .relocations h3{break-after:avoid}
+}
 </style>
 </head>
 <body>
@@ -98,6 +125,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <h1>DP/CP Mock Exam Invigilation Timetable</h1>
 <p><strong>21–30 September 2026</strong></p>
 <p>Exam start times are grouped once per set of papers. Invigilation blocks show exact duty times.</p>
+<p class="status-note">Updated 12 September 2026: confirmed invigilation replacements and classroom relocations are included. Normal Grade 12 lessons are released and do not require cover.</p>
 </header>
 <section class="day"><h2>Monday, 21 September 2026</h2>
 <div class="session">
@@ -135,7 +163,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:05</span></div><div class="duty"><strong>Alec</strong><span>13:05–13:50</span></div><div class="duty"><strong>Chong</strong><span>13:50–14:35</span></div><div class="duty"><strong>Alec</strong><span>14:35–15:20</span></div></div></div>
 <div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>12:20–13:05</span></div><div class="duty"><strong>Bill</strong><span>13:05–13:50</span></div><div class="duty"><strong>Sim Wei</strong><span>13:50–14:35</span></div><div class="duty"><strong>Hajira</strong><span>14:35–15:20</span></div></div></div>
 </div>
-</div></section><section class="day"><h2>Wednesday, 23 September 2026</h2>
+</div></section><section class="day" id="wednesday-23"><h2>Wednesday, 23 September 2026</h2>
 <div class="session">
 <div class="session-label">MORNING · DOUBLE ROOM</div>
 <div class="double-head"><span>EXAM / DOUBLE ROOM</span><span>INVIGILATOR 1</span><span>INVIGILATOR 2</span></div>
@@ -145,8 +173,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <div class="room-chip purple">BF-02 + BF-04 · DOUBLE ROOM</div>
 <div class="exam-list"><div class="exam-time-group"><div class="exam-time">08:00</div><div class="exam-group-names"><div class="exam-group-name">Business Management HL — Paper 2</div><div class="exam-group-name">Business Management SL — Paper 2</div><div class="exam-group-name">Psychology HL — Paper 2</div><div class="exam-group-name">Psychology SL — Paper 2</div></div></div></div>
 </div>
-<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>John</strong><span>08:00–10:00</span></div></div></div>
-<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>08:00–10:00</span></div></div></div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>John</strong><span>08:00–09:00</span></div><div class="duty"><strong>Jeff</strong><span>09:00–10:00</span></div></div></div>
+<div class="double-staff"><div class="duty-stack"><div class="duty"><strong>Ryan B</strong><span>08:00–09:00</span></div><div class="duty"><strong>Chong</strong><span>09:00–10:00</span></div></div></div>
 </div>
 <div class="double-block">
 <div class="double-exams">
@@ -218,9 +246,9 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Chinese A: Language &amp; Literature SL — Paper 1</div><div class="exam-group-name">Chinese B Mandarin SL — Paper 1 (Writing)</div><div class="exam-group-name">French ab initio SL — Paper 1 (Writing)</div><div class="exam-group-name">Japanese A: Literature SL — Paper 1</div><div class="exam-group-name">Mandarin ab initio SL — Paper 1 (Writing)</div></div></div><div class="exam-time-group"><div class="exam-time">13:35</div><div class="exam-group-names"><div class="exam-group-name">French ab initio SL — Paper 2 (Reading)</div><div class="exam-group-name">Mandarin ab initio SL — Paper 2 (Reading)</div></div></div><div class="exam-time-group"><div class="exam-time">13:50</div><div class="exam-group-names"><div class="exam-group-name">Chinese B Mandarin SL — Paper 2 (Reading)</div></div></div></div>
 </div>
 <div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Erick</strong><span>12:20–13:05</span></div><div class="duty"><strong>Hajira</strong><span>13:05–13:50</span></div><div class="duty"><strong>Wang Zhuo</strong><span>13:50–14:50</span></div></div></div>
-<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:05</span></div><div class="duty"><strong>Sumi</strong><span>13:05–13:50</span></div><div class="duty"><strong>Alec</strong><span>13:50–14:50</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:05</span></div><div class="duty"><strong>Emihle</strong><span>13:05–13:50</span></div><div class="duty"><strong>Alec</strong><span>13:50–14:50</span></div></div></div>
 </div>
-</div></section><section class="day"><h2>Friday, 25 September 2026</h2>
+</div></section><section class="day" id="friday-25"><h2>Friday, 25 September 2026</h2>
 <div class="session">
 <div class="session-label">MORNING · FOUR SEPARATE ROOMS</div>
 <div class="room-grid">
@@ -314,7 +342,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Chemistry HL — Paper 1</div><div class="exam-group-name">Chemistry SL — Paper 1</div><div class="exam-group-name">Economics HL — Paper 2</div><div class="exam-group-name">Economics SL — Paper 2</div></div></div></div>
 </div>
 <div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Chong</strong><span>12:20–13:20</span></div><div class="duty"><strong>Hajira</strong><span>13:20–14:20</span></div></div></div>
-<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Sumi</strong><span>12:20–13:20</span></div><div class="duty"><strong>Sim Wei</strong><span>13:20–14:20</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Anis</strong><span>12:20–13:20</span></div><div class="duty"><strong>Sim Wei</strong><span>13:20–14:20</span></div></div></div>
 </div>
 </div></section><section class="day"><h2>Wednesday, 30 September 2026</h2>
 <div class="session">
@@ -338,9 +366,83 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,ui-sans
 <div class="exam-list"><div class="exam-time-group"><div class="exam-time">12:20</div><div class="exam-group-names"><div class="exam-group-name">Mathematics AA HL — Paper 3</div><div class="exam-group-name">Mathematics AI HL — Paper 3</div></div></div></div>
 </div>
 <div class="staff-panel"><div class="panel-head">INVIGILATOR 1</div><div class="duty-stack"><div class="duty"><strong>Alec</strong><span>12:20–13:35</span></div></div></div>
-<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Sumi</strong><span>12:20–13:35</span></div></div></div>
+<div class="staff-panel"><div class="panel-head">INVIGILATOR 2</div><div class="duty-stack"><div class="duty"><strong>Michaela</strong><span>12:20–13:35</span></div></div></div>
 </div>
 </div></section>
+<section class="relocations">
+<h2>Classroom Alternatives During Mock Exams</h2>
+<p class="intro"><strong>Cover desk:</strong> use the green primary classroom below for the full class period. Do not send cover to the displaced BF room or MPH. Backups may be used only after a same-day availability check. PHE is treated as displaced from the MPH whenever the MPH is in exam use.</p>
+<h3>Monday, 21 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 7B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BG-01, BG-02</span></div>
+<div class="relocation-row"><span><strong>12:20–13:05</strong></span><span><strong>PHE 10A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BG-03, BG-01</span></div>
+<div class="relocation-row"><span><strong>13:50–14:35</strong></span><span><strong>PHE 10B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-06, BF-08</span></div>
+</div>
+<h3>Tuesday, 22 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:10–08:55</strong></span><span><strong>PHE 6C</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-08</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>10:10–10:55</strong></span><span><strong>PHE 9C</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-07</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 8A</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BF-09</strong></span><span>BG-01, BG-02</span></div>
+<div class="relocation-row"><span><strong>13:50–14:35</strong></span><span><strong>PHE 9B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-06, BF-02</span></div>
+<div class="relocation-row"><span><strong>14:35–15:20</strong></span><span><strong>PHE 6B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-06, BF-02</span></div>
+</div>
+<h3>Wednesday, 23 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:00–08:10</strong></span><span><strong>Mentorship 9B</strong><small>Ryan B, Sim Wei</small></span><span>BF-02</span><span><strong class="destination">BF-06</strong></span><span>BG-01, BG-03</span></div>
+<div class="relocation-row"><span><strong>08:00–08:10</strong></span><span><strong>Mentorship 9A</strong><small>Jawaria, Jp</small></span><span>BF-04</span><span><strong class="destination">BG-03</strong></span><span>BG-04, BG-01</span></div>
+<div class="relocation-row"><span><strong>08:10–09:40</strong></span><span><strong>Design 9B</strong><small>Shahind</small></span><span>BF-02</span><span><strong class="destination">BG-02</strong></span><span>BG-01</span></div>
+<div class="relocation-row"><span><strong>09:40–10:25</strong></span><span><strong>Chinese Lang B HL DP Year 1</strong><small>Wang Zhuo</small></span><span>BF-04</span><span><strong class="destination">BF-05</strong></span><span>BG-03, BG-06</span></div>
+<div class="relocation-row"><span><strong>12:20–13:05</strong></span><span><strong>PHE 10A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-03</strong></span><span>BG-02, BG-01</span></div>
+<div class="relocation-row"><span><strong>12:25–13:10</strong></span><span><strong>PHE 8C</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BG-03, BG-05</span></div>
+<div class="relocation-row"><span><strong>14:35–15:20</strong></span><span><strong>PHE 8B</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-04</span></div>
+</div>
+<h3>Thursday, 24 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:00–08:10</strong></span><span><strong>Mentorship 9B</strong><small>Ryan B, Sim Wei</small></span><span>BF-02</span><span><strong class="destination">BF-06</strong></span><span>BG-01, BG-03</span></div>
+<div class="relocation-row"><span><strong>08:00–08:10</strong></span><span><strong>Mentorship 9A</strong><small>Jawaria, Jp</small></span><span>BF-04</span><span><strong class="destination">BG-03</strong></span><span>BG-04, BG-01</span></div>
+<div class="relocation-row"><span><strong>08:10–09:40</strong></span><span><strong>Design 10B</strong><small>Shahind</small></span><span>BF-02</span><span><strong class="destination">BG-03</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>08:10–09:40</strong></span><span><strong>Mandarin Grade 9A/9C/10A Emergent</strong><small>Persis</small></span><span>BF-04</span><span><strong class="destination">BG-04</strong></span><span>BG-05, BG-06</span></div>
+<div class="relocation-row"><span><strong>08:10–08:55</strong></span><span><strong>PHE 9B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-05</strong></span><span>BG-06, BF-01</span></div>
+<div class="relocation-row"><span><strong>08:55–09:40</strong></span><span><strong>PHE 6A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-05</strong></span><span>BG-06</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 7A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BG-05, BG-06</span></div>
+<div class="relocation-row"><span><strong>13:50–14:35</strong></span><span><strong>PHE 8C</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BF-06</strong></span><span>BF-08, BF-01</span></div>
+<div class="relocation-row"><span><strong>14:35–15:20</strong></span><span><strong>PHE 6C</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-06</strong></span><span>BF-08, BF-01</span></div>
+</div>
+<h3>Friday, 25 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:00–08:40</strong></span><span><strong>Mentorship 9C</strong><small>Marien, Rommel</small></span><span>BF-01</span><span><strong class="destination">BG-01</strong></span><span>BG-03, BG-04</span></div>
+<div class="relocation-row"><span><strong>08:00–08:40</strong></span><span><strong>Mentorship 9B</strong><small>Ryan B, Sim Wei</small></span><span>BF-02</span><span><strong class="destination">BG-03</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>08:00–08:40</strong></span><span><strong>Mentorship 10A</strong><small>Michaela, Shafiqa</small></span><span>BF-03</span><span><strong class="destination">BG-04</strong></span><span>BG-05, BG-06</span></div>
+<div class="relocation-row"><span><strong>08:00–08:40</strong></span><span><strong>Mentorship 9A</strong><small>Jawaria, Jp</small></span><span>BF-04</span><span><strong class="destination">BG-05</strong></span><span>BG-06</span></div>
+<div class="relocation-row"><span><strong>08:40–09:20</strong></span><span><strong>Explorations 9C</strong><small>Jeff</small></span><span>BF-01</span><span><strong class="destination">BG-01</strong></span><span>BG-03, BG-04</span></div>
+<div class="relocation-row"><span><strong>08:40–09:20</strong></span><span><strong>Explorations 9B</strong><small>Shahind</small></span><span>BF-02</span><span><strong class="destination">BG-03</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>08:40–09:20</strong></span><span><strong>Hcs 10A</strong><small>Shafiqa</small></span><span>BF-03</span><span><strong class="destination">BG-04</strong></span><span>BG-05, BG-06</span></div>
+<div class="relocation-row"><span><strong>08:40–09:20</strong></span><span><strong>Study Hall 9A</strong><small>Z</small></span><span>BF-04</span><span><strong class="destination">BG-05</strong></span><span>BG-06</span></div>
+<div class="relocation-row"><span><strong>09:20–10:00</strong></span><span><strong>Study Hall 9C</strong><small>Z</small></span><span>BF-01</span><span><strong class="destination">BF-06</strong></span><span>BF-07, BF-08</span></div>
+</div>
+<h3>Monday, 28 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 7B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BG-01, BG-02</span></div>
+<div class="relocation-row"><span><strong>12:20–13:05</strong></span><span><strong>PHE 10A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BG-03, BG-01</span></div>
+<div class="relocation-row"><span><strong>13:50–14:35</strong></span><span><strong>PHE 10B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-06, BF-08</span></div>
+</div>
+<h3>Tuesday, 29 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:10–08:55</strong></span><span><strong>PHE 6C</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-08</strong></span><span>BG-04, BG-05</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 8A</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BF-09</strong></span><span>BG-01, BG-02</span></div>
+<div class="relocation-row"><span><strong>13:50–14:35</strong></span><span><strong>PHE 9B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-05</strong></span><span>BF-06, BF-02</span></div>
+</div>
+<h3>Wednesday, 30 September 2026</h3>
+<div class="relocation-table"><div class="relocation-row relocation-head"><span>TIME</span><span>CLASS / TEACHER</span><span>DISPLACED FROM</span><span>USE THIS ROOM</span><span>BACKUPS</span></div>
+<div class="relocation-row"><span><strong>08:10–08:55</strong></span><span><strong>PHE 10B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BF-04, BG-01</span></div>
+<div class="relocation-row"><span><strong>08:55–09:40</strong></span><span><strong>PHE 6B</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BF-04, BG-01</span></div>
+<div class="relocation-row"><span><strong>10:10–10:55</strong></span><span><strong>PHE 9C</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-03</strong></span><span>BG-06, BF-02</span></div>
+<div class="relocation-row"><span><strong>10:55–11:40</strong></span><span><strong>PHE 6A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BF-08</strong></span><span>BG-03, BG-06</span></div>
+<div class="relocation-row"><span><strong>11:40–12:25</strong></span><span><strong>PHE 8A</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BG-03</strong></span><span>BG-02, BG-01</span></div>
+<div class="relocation-row"><span><strong>12:20–13:05</strong></span><span><strong>PHE 10A</strong><small>Rommel</small></span><span>MPH</span><span><strong class="destination">BG-02</strong></span><span>BG-03, BG-05</span></div>
+<div class="relocation-row"><span><strong>12:25–13:10</strong></span><span><strong>PHE 8C</strong><small>Jp</small></span><span>MPH</span><span><strong class="destination">BG-03</strong></span><span>BG-05, BG-01</span></div>
+</div>
+</section>
 </div>
 </body>
 </html>
