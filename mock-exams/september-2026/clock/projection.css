@@ -271,6 +271,7 @@ button:focus-visible { outline-color: var(--blue); }
 .paper-count { color: #3d4e62; font-weight: 750; }
 
 .start-all,
+.select-all,
 .reset-session {
   border-radius: .4rem;
   font-weight: 850;
@@ -283,6 +284,16 @@ button:focus-visible { outline-color: var(--blue); }
 }
 
 .start-all:hover { background: #0e315b; }
+.start-all:disabled { opacity: .45; cursor: default; }
+
+.select-all {
+  padding: .45rem .65rem;
+  color: #34465b;
+  background: #fff;
+  border-color: #aab4c1;
+}
+
+.select-all:hover { color: var(--school-blue); border-color: var(--school-blue); }
 
 .reset-session {
   color: #4b5b6e;
@@ -311,6 +322,23 @@ button:focus-visible { outline-color: var(--blue); }
 .paper-card.is-warning { border-left-color: var(--amber); background: #fffaf0; }
 .paper-card.is-elapsed { border-left-color: var(--red); background: #fff7f7; }
 .paper-card.is-finished { border-left-color: #8792a0; background: #f2f4f6; opacity: .82; }
+
+.paper-title.is-selectable {
+  display: grid;
+  grid-template-columns: 1.2rem minmax(0, 1fr);
+  gap: .55rem;
+  align-items: start;
+}
+
+.paper-select {
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: .08rem 0 0;
+  accent-color: var(--school-blue);
+  cursor: pointer;
+}
+
+.paper-select:focus-visible { outline: .2rem solid var(--cyan); outline-offset: .15rem; }
 
 .paper-title h2 {
   margin-bottom: .25rem;

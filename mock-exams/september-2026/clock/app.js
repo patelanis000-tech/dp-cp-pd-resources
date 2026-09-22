@@ -91,6 +91,7 @@ const app = document.querySelector("#app");
 const STORAGE_KEY = "mock-exam-clock-v1";
 let view = "selection";
 let selectedSessionId = getDefaultSessionId();
+const selectedPaperIndices = new Set();
 let ticker;
 
 function getLocalDateKey(date = new Date()) {
@@ -132,17 +133,12 @@ function setPaperState(session, index, patch) {
   writeState(state);
 }
 
-function startAllUnstarted(session, actualSessionStart = Date.now()) {
-  const state = readState();
+function selectAllUnstarted(session) {
+  selectedPaperIndices.clear();
   session.papers.forEach((_, index) => {
-    const key = paperKey(session, index);
-    const paperState = state[key] || {};
-    if (!getActualSessionStart(paperState) && !paperState.finishedAt) {
-      state[key] = { ...paperState, actualSessionStart, actualStart: null, finishedAt: null };
-    }
+    const state = getPaperState(session, index);
+    if (!getActualSessionStart(state) && !state.finishedAt) selectedPaperIndices.add(index);
   });
-  writeState(state);
-  return actualSessionStart;
 }
 
 function clearSessionState(session) {
@@ -170,17 +166,19 @@ function timeInputValue(timestamp) {
   return [date.getHours(), date.getMinutes(), date.getSeconds()].map((value) => String(value).padStart(2, "0")).join(":");
 }
 
-function applyStartTime(session, time, index = null, correct = false, now = Date.now()) {
+function applyStartTime(session, time, target, correct = false, now = Date.now()) {
   const actualSessionStart = parseStartTime(session, time, now);
-  if (index !== null && (!Number.isInteger(index) || !session.papers[index])) throw new Error("Choose a valid paper.");
-  if (correct && index === null) throw new Error("Choose one paper to correct.");
+  if (correct && (!Number.isInteger(target) || !session.papers[target])) throw new Error("Choose one paper to correct.");
+  if (!correct && (!Array.isArray(target) || !target.length || target.some((index) => !Number.isInteger(index) || !session.papers[index]))) {
+    throw new Error("Select at least one paper to start.");
+  }
   const state = readState();
-  const indices = index === null ? session.papers.map((_, i) => i) : [index];
+  const indices = correct ? [target] : target;
   indices.forEach((i) => {
     const key = paperKey(session, i);
     const existing = state[key] || {};
     if (correct) {
-      if (!getActualSessionStart(existing)) throw new Error("This paper has not started. Use Start paper instead.");
+      if (!getActualSessionStart(existing)) throw new Error("This paper has not started. Select it before starting papers.");
       state[key] = { ...existing, actualSessionStart, actualStart: null };
     } else if (!getActualSessionStart(existing) && !existing.finishedAt) {
       state[key] = { ...existing, actualSessionStart, actualStart: null, finishedAt: null };
@@ -189,19 +187,17 @@ function applyStartTime(session, time, index = null, correct = false, now = Date
   writeState(state);
 }
 
-function openTimeEntry(session, index = null, correct = false) {
+function openTimeEntry(session, target, correct = false) {
   const dialog = document.querySelector("#time-entry");
-  const existing = index === null ? null : getPaperState(session, index);
+  const existing = correct ? getPaperState(session, target) : null;
   const oldStart = existing && getActualSessionStart(existing);
-  const eligible = session.papers.filter((_, i) => {
-    const state = getPaperState(session, i);
-    return !getActualSessionStart(state) && !state.finishedAt;
-  }).length;
-  const target = index === null ? `${eligible} unstarted paper${eligible === 1 ? "" : "s"}` : session.papers[index][1];
+  const targetLabel = correct
+    ? session.papers[target][1]
+    : `${target.length} selected paper${target.length === 1 ? "" : "s"}`;
   dialog.innerHTML = `
     <form id="time-entry-form">
-      <h2 id="time-entry-title">${correct ? "Correct start time" : index === null ? "What time did these papers start?" : "What time did this paper start?"}</h2>
-      <p id="time-entry-context">${formatSessionDate(session.date)} · ${session.label} · ${session.room}<br><strong>${target}</strong></p>
+      <h2 id="time-entry-title">${correct ? "Correct start time" : "What time did these papers start?"}</h2>
+      <p id="time-entry-context">${formatSessionDate(session.date)} · ${session.label} · ${session.room}<br><strong>${targetLabel}</strong></p>
       <p id="time-entry-help">Enter the start of reading for written papers, or the actual start for listening papers. Times use this device’s local time.</p>
       <label for="actual-start-time" class="field-label">Actual start time</label>
       <input id="actual-start-time" type="time" step="1" required value="${timeInputValue(correct ? oldStart : Date.now())}" />
@@ -231,14 +227,15 @@ function openTimeEntry(session, index = null, correct = false) {
     try {
       const start = parseStartTime(session, input.value);
       if (correct && reviewedTime !== input.value) {
-        const duration = (getReadingMinutes(session.papers[index][1]) + session.papers[index][2]) * 60_000;
+        const duration = (getReadingMinutes(session.papers[target][1]) + session.papers[target][2]) * 60_000;
         confirmation.textContent = `Change the start from ${formatClock(new Date(oldStart))} to ${formatClock(new Date(start))}? The end time changes from ${formatTime(oldStart + duration)} to ${formatTime(start + duration)}. Confirm only if this is the actual start time.`;
         confirmation.hidden = false;
         reviewedTime = input.value;
         apply.textContent = "Confirm correction";
         return;
       }
-      applyStartTime(session, input.value, index, correct);
+      applyStartTime(session, input.value, target, correct);
+      if (!correct) selectedPaperIndices.clear();
       dialog.close();
       renderClock();
     } catch (problem) {
@@ -384,18 +381,20 @@ function renderPaper(session, paper, index, now) {
   const labels = ["Start", "30 min", "5 min", "End"];
   const emphasisTimes = readingMinutes ? [actualSessionStart, ...milestones] : milestones;
   const justReached = emphasisTimes.some((time) => time && now >= time && now < time + 60_000);
-  const action = !actualSessionStart
-    ? `<button class="start-button" data-action="start" data-index="${index}">Start paper…</button>`
-    : !state.finishedAt
+  const selectable = !actualSessionStart && !state.finishedAt;
+  const action = actualSessionStart && !state.finishedAt
       ? `<button class="finish-button" data-action="finish" data-index="${index}">Mark finished</button>`
       : "";
 
   return `
     <article class="paper-card${readingMinutes ? " has-reading" : ""} is-${display.className}${justReached ? " is-warning" : ""}">
-      <div class="paper-title">
-        <h2>${name}</h2>
-        <span class="paper-meta">Scheduled ${scheduledStart} · ${durationLabel(durationMinutes)}${readingMinutes ? " + 5 min reading" : " · Listening"}</span>
-        ${actualSessionStart ? `<button class="correct-time" data-action="correct" data-index="${index}" aria-label="Correct start time for ${name}">Correct start time…</button>` : ""}
+      <div class="paper-title${selectable ? " is-selectable" : ""}">
+        ${selectable ? `<input class="paper-select" type="checkbox" data-select-index="${index}" aria-labelledby="paper-title-${index}" ${selectedPaperIndices.has(index) ? "checked" : ""}>` : ""}
+        <div class="paper-title-copy">
+          <h2 id="paper-title-${index}">${name}</h2>
+          <span class="paper-meta">Scheduled ${scheduledStart} · ${durationLabel(durationMinutes)}${readingMinutes ? " + 5 min reading" : " · Listening"}</span>
+          ${actualSessionStart ? `<button class="correct-time" data-action="correct" data-index="${index}" aria-label="Correct start time for ${name}">Correct start time…</button>` : ""}
+        </div>
       </div>
       ${readingMinutes ? `<div class="milestone${actualSessionStart && now >= actualSessionStart && now < actualSessionStart + 60_000 ? " is-reached" : ""}"><span class="milestone-label">Reading</span><span class="milestone-time milestone-range">${actualSessionStart ? `${formatTime(actualSessionStart)}–${formatTime(writingStart)}` : "—"}</span></div>` : ""}
       ${labels.map((label, milestoneIndex) => {
@@ -415,6 +414,10 @@ function renderClock() {
   const now = new Date();
   const states = session.papers.map((_, index) => getPaperState(session, index));
   const unstartedCount = states.filter((state) => !getActualSessionStart(state) && !state.finishedAt).length;
+  [...selectedPaperIndices].forEach((index) => {
+    const state = states[index];
+    if (!state || getActualSessionStart(state) || state.finishedAt) selectedPaperIndices.delete(index);
+  });
   const hasSessionState = states.some((state) => getActualSessionStart(state) || state.finishedAt);
   app.innerHTML = `
     <section class="clock-view" aria-label="Room Clock for ${session.room}">
@@ -440,7 +443,7 @@ function renderClock() {
         <div class="clock-toolbar">
           <span class="paper-count">${session.papers.length} paper${session.papers.length === 1 ? "" : "s"} in this room</span>
           <div class="toolbar-actions">
-            ${unstartedCount ? `<button class="start-all" id="start-all">Start all${unstartedCount < session.papers.length ? " unstarted papers" : " papers"}…</button>` : ""}
+            ${unstartedCount ? `<button class="select-all" id="select-all">Select all</button><button class="start-all" id="start-selected" ${selectedPaperIndices.size ? "" : "disabled"}>Start selected papers…</button>` : ""}
             <button class="reset-session" id="reset-session" ${hasSessionState ? "" : "disabled"}>Reset session</button>
           </div>
         </div>
@@ -452,14 +455,21 @@ function renderClock() {
     </section>
     <dialog class="time-entry" id="time-entry" aria-labelledby="time-entry-title" aria-describedby="time-entry-context time-entry-help"></dialog>`;
 
-  document.querySelector("#back-to-selection").addEventListener("click", () => { view = "selection"; renderSelection(); });
+  document.querySelector("#back-to-selection").addEventListener("click", () => { selectedPaperIndices.clear(); view = "selection"; renderSelection(); });
   document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", handlePaperAction));
-  document.querySelector("#start-all")?.addEventListener("click", () => {
-    openTimeEntry(session);
+  document.querySelectorAll("[data-select-index]").forEach((checkbox) => checkbox.addEventListener("change", handlePaperSelection));
+  document.querySelector("#select-all")?.addEventListener("click", () => {
+    selectAllUnstarted(session);
+    renderClock();
+  });
+  document.querySelector("#start-selected")?.addEventListener("click", () => {
+    const selected = [...selectedPaperIndices];
+    if (selected.length) openTimeEntry(session, selected);
   });
   document.querySelector("#reset-session").addEventListener("click", () => {
     if (!hasSessionState) return;
     if (window.confirm(`Reset all timing and finish state for ${session.room}, ${session.label}?`)) {
+      selectedPaperIndices.clear();
       clearSessionState(session);
       renderClock();
     }
@@ -473,14 +483,23 @@ function renderClock() {
     const currentNow = Date.now();
     document.querySelector("#paper-list").innerHTML = session.papers.map((paper, index) => renderPaper(session, paper, index, currentNow)).join("");
     document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", handlePaperAction));
+    document.querySelectorAll("[data-select-index]").forEach((checkbox) => checkbox.addEventListener("change", handlePaperSelection));
   }, 1000);
+}
+
+function handlePaperSelection(event) {
+  const index = Number(event.currentTarget.dataset.selectIndex);
+  if (event.currentTarget.checked) selectedPaperIndices.add(index);
+  else selectedPaperIndices.delete(index);
+  const startSelected = document.querySelector("#start-selected");
+  if (startSelected) startSelected.disabled = selectedPaperIndices.size === 0;
 }
 
 function handlePaperAction(event) {
   const session = sessions.find((item) => item.id === selectedSessionId);
   const index = Number(event.currentTarget.dataset.index);
-  if (event.currentTarget.dataset.action === "start" || event.currentTarget.dataset.action === "correct") {
-    openTimeEntry(session, index, event.currentTarget.dataset.action === "correct");
+  if (event.currentTarget.dataset.action === "correct") {
+    openTimeEntry(session, index, true);
     return;
   }
   if (event.currentTarget.dataset.action === "finish") setPaperState(session, index, { finishedAt: Date.now() });
