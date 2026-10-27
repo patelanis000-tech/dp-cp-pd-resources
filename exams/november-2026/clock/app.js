@@ -1,6 +1,6 @@
 "use strict";
 
-const sessions = window.NOVEMBER_SESSIONS;
+const sessions = window.NOVEMBER_SESSIONS.filter((session) => getActivePapers(session).length);
 
 const app = document.querySelector("#app");
 const STORAGE_KEY = "november-exam-clock-2026-teacher-pd-v1";
@@ -15,7 +15,7 @@ function getLocalDateKey(date = new Date()) {
 }
 
 function firstScheduledMinute(session) {
-  const earliest = [...session.papers].sort((a, b) => a[0].localeCompare(b[0]))[0][0];
+  const earliest = getActivePapers(session).map(({ paper }) => paper).sort((a, b) => a[0].localeCompare(b[0]))[0][0];
   return new Date(`${session.date}T${earliest}:00+08:00`).getTime();
 }
 
@@ -38,6 +38,16 @@ function writeState(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(st
 
 function paperKey(session, index) { return `${session.id}:${index}`; }
 
+// Keep original positions and stored keys. Cancellation only filters operations and display.
+function isPaperActive(session, index) {
+  const policy = window.NOVEMBER_OPERATIONAL_CANCELLATIONS;
+  return Boolean(session?.papers[index]) && !(policy?.enabled && policy.papers?.[paperKey(session, index)]?.cancelled);
+}
+
+function getActivePapers(session) {
+  return session.papers.map((paper, index) => ({ paper, index })).filter(({ index }) => isPaperActive(session, index));
+}
+
 function getPaperState(session, index) { return readState()[paperKey(session, index)] || {}; }
 
 function setPaperState(session, index, patch) {
@@ -48,17 +58,15 @@ function setPaperState(session, index, patch) {
 
 function selectAllUnstarted(session) {
  selectedPaperIndices.clear();
- const available=session.papers.map((p,i)=>({p,i,s:getPaperState(session,i)})).filter(x=>!getActualSessionStart(x.s)&&!x.s.finishedAt);
+ const available=session.papers.map((p,i)=>({p,i,s:getPaperState(session,i)})).filter(x=>isPaperActive(session,x.i)&&!getActualSessionStart(x.s)&&!x.s.finishedAt);
  const first=available.map(x=>x.p[0]).sort()[0];
  available.filter(x=>x.p[0]===first).forEach(x=>selectedPaperIndices.add(x.i));
 }
 
 function clearSessionState(session) {
   const state = readState();
-  const prefix = `${session.id}:`;
-  Object.keys(state).forEach((key) => {
-    if (key.startsWith(prefix)) delete state[key];
-  });
+  // Reset active papers only; archived cancelled timing remains available for restoration.
+  getActivePapers(session).forEach(({ index }) => delete state[paperKey(session, index)]);
   writeState(state);
 }
 
@@ -85,6 +93,9 @@ function applyStartTime(session, time, target, correct = false, now = Date.now()
   }
   const state = readState();
   const indices = correct ? [target] : target;
+  if (indices.some((index) => !isPaperActive(session, index))) {
+    throw new Error("This paper is operationally cancelled. Restore it through the coordinator before starting or correcting it.");
+  }
   if (new Set(indices.map(i=>session.papers[i][0])).size>1) throw new Error("Consecutive papers: select only one start wave at a time.");
   for (const i of indices) {
     const prev=session.papers[i][4];
@@ -94,7 +105,7 @@ function applyStartTime(session, time, target, correct = false, now = Date.now()
       const earliest=actual+(getReadingMinutes(session.papers[prev][1])+session.papers[prev][2])*60000;
       if (actualSessionStart<earliest) throw new Error("This paper overlaps the preceding paper.");
     }
-    for(let j=0;j<session.papers.length;j++) if(session.papers[j][4]===i) {
+    for(let j=0;j<session.papers.length;j++) if(isPaperActive(session,j)&&session.papers[j][4]===i) {
       const ns=state[paperKey(session,j)]||{}, next=getActualSessionStart(ns);
       if(next && actualSessionStart+(getReadingMinutes(session.papers[i][1])+session.papers[i][2])*60000>next)
         throw new Error("This correction overlaps the following paper.");
@@ -182,7 +193,7 @@ function openResetConfirmation(session) {
     <form id="reset-entry-form">
       <h2 id="time-entry-title">Reset this room's timing?</h2>
       <p id="time-entry-context">${formatSessionDate(session.date)} · ${session.label} · <strong>${session.room}</strong></p>
-      <p id="time-entry-help">This clears all actual starts and Finished marks for this room and session. Other rooms and sessions keep their timing. Keep the current timing unless you intend to clear this room.</p>
+      <p id="time-entry-help">This clears actual starts and Finished marks for active papers in this room and session. Archived cancelled-paper timing is retained. Other rooms and sessions keep their timing. Keep the current timing unless you intend to clear this room.</p>
       <div class="time-entry-actions">
         <button type="button" class="back-button" id="cancel-reset">Keep timing</button>
         <button type="submit" class="back-button confirm-reset" id="confirm-reset">Reset this room</button>
@@ -241,6 +252,7 @@ function renderSelection() {
       <nav class="clock-nav" aria-label="Clock links"><a href="/">PD Resources</a><a href="practice.html">Practice mode</a></nav>
       <h1 id="page-title">Choose the room clock.</h1>
       <p class="intro"><strong>Exam clock.</strong> DP reading includes listening. MYP records writing start; reading needs confirmation. Select the examination date and session, then choose the room being projected.</p>
+      ${window.NOVEMBER_OPERATIONAL_CANCELLATIONS?.enabled ? '<p class="source-note">French ab initio sittings are currently cancelled. Original records are retained for restoration.</p>' : ""}
       <div class="picker-card">
         <div class="picker-grid">
           <label>
@@ -259,7 +271,7 @@ function renderSelection() {
           <button class="primary-button" id="open-clock">Open Room Clock</button>
         </div>
         <div class="selection-summary">
-          <span id="selection-detail"><strong>${selected.papers.length} papers</strong> scheduled in ${selected.room}</span>
+          <span id="selection-detail"><strong>${getActivePapers(selected).length} papers</strong> scheduled in ${selected.room}</span>
           <span class="source-note">Timings stay in this browser. On another computer, enter each paper's original actual start.</span>
         </div>
       </div>
@@ -278,7 +290,7 @@ function renderSelection() {
 
   function updateSummary() {
     const chosen = sessions.find((session) => session.id === roomSelect.value);
-    document.querySelector("#selection-detail").innerHTML = `<strong>${chosen.papers.length} paper${chosen.papers.length === 1 ? "" : "s"}</strong> scheduled in ${chosen.room}`;
+    document.querySelector("#selection-detail").innerHTML = `<strong>${getActivePapers(chosen).length} paper${getActivePapers(chosen).length === 1 ? "" : "s"}</strong> scheduled in ${chosen.room}`;
   }
 
   sessionSelect.addEventListener("change", updateRooms);
@@ -307,6 +319,7 @@ function getDisplayStatus(state, durationMinutes, readingMinutes, now) {
 }
 
 function renderPaper(session, paper, index, now) {
+  if (!isPaperActive(session, index)) return "";
   const [scheduledStart, name, durationMinutes] = paper;
   const readingMinutes = getReadingMinutes(name);
   const state = getPaperState(session, index);
@@ -347,17 +360,18 @@ function renderPaper(session, paper, index, now) {
 }
 
 function renderClock() {
-  const session = sessions.find((item) => item.id === selectedSessionId);
+  const session = sessions.find((item) => item.id === selectedSessionId) || sessions[0];
+  selectedSessionId = session.id;
   const now = new Date();
   const states = session.papers.map((_, index) => getPaperState(session, index));
-  const unstartedCount = states.filter((state) => !getActualSessionStart(state) && !state.finishedAt).length;
+  const unstartedCount = getActivePapers(session).filter(({ index }) => !getActualSessionStart(states[index]) && !states[index].finishedAt).length;
   [...selectedPaperIndices].forEach((index) => {
     const state = states[index];
-    if (!state || getActualSessionStart(state) || state.finishedAt) selectedPaperIndices.delete(index);
+    if (!isPaperActive(session, index) || !state || getActualSessionStart(state) || state.finishedAt) selectedPaperIndices.delete(index);
   });
-  const hasSessionState = states.some((state) => getActualSessionStart(state) || state.finishedAt);
+  const hasSessionState = getActivePapers(session).some(({ index }) => getActualSessionStart(states[index]) || states[index].finishedAt);
   app.innerHTML = `
-    <section class="clock-view${session.papers.length >= 5 ? " clock-view-many" : ""}" aria-label="Room Clock for ${session.room}">
+    <section class="clock-view${getActivePapers(session).length >= 5 ? " clock-view-many" : ""}" aria-label="Room Clock for ${session.room}">
       <header class="clock-header">
         <div class="brand-row">
           ${brandLockupMarkup()}
@@ -378,14 +392,14 @@ function renderClock() {
       </header>
       <div class="clock-main">
         <div class="clock-toolbar">
-          <span class="paper-count">${session.papers.length} paper${session.papers.length === 1 ? "" : "s"} in this room</span>
+          <span class="paper-count">${getActivePapers(session).length} paper${getActivePapers(session).length === 1 ? "" : "s"} in this room</span>
           <div class="toolbar-actions">
             ${unstartedCount ? `<button class="select-all" id="select-all">Select next start wave</button><button class="start-all" id="start-selected" ${selectedPaperIndices.size ? "" : "disabled"}>Start selected papers…</button>` : ""}
             <button class="reset-session" id="reset-session" ${hasSessionState ? "" : "disabled"}>Reset session</button>
           </div>
         </div>
         <div class="paper-list" id="paper-list">
-          ${session.papers.map((paper, index) => renderPaper(session, paper, index, now.getTime())).join("")}
+          ${getActivePapers(session).map(({ paper, index }) => renderPaper(session, paper, index, now.getTime())).join("")}
         </div>
         <p class="footnote">Writing finish does not authorise release. Keep continuous supervision and follow coordinator release instructions.<br>November 2026 Examinations · Teacher PD clock</p>
       </div>
@@ -414,7 +428,7 @@ function renderClock() {
     const timeNode = document.querySelector("#current-time");
     if (timeNode) timeNode.textContent = formatClock(new Date());
     const currentNow = Date.now();
-    document.querySelector("#paper-list").innerHTML = session.papers.map((paper, index) => renderPaper(session, paper, index, currentNow)).join("");
+    document.querySelector("#paper-list").innerHTML = getActivePapers(session).map(({ paper, index }) => renderPaper(session, paper, index, currentNow)).join("");
     document.querySelectorAll("[data-action]").forEach((button) => button.addEventListener("click", handlePaperAction));
     document.querySelectorAll("[data-select-index]").forEach((checkbox) => checkbox.addEventListener("change", handlePaperSelection));
   }, 1000);
@@ -422,6 +436,8 @@ function renderClock() {
 
 function handlePaperSelection(event) {
   const index = Number(event.currentTarget.dataset.selectIndex);
+  const session = sessions.find((item) => item.id === selectedSessionId);
+  if (!session || !isPaperActive(session, index)) return;
   if (event.currentTarget.checked) selectedPaperIndices.add(index);
   else selectedPaperIndices.delete(index);
   const startSelected = document.querySelector("#start-selected");
@@ -431,6 +447,7 @@ function handlePaperSelection(event) {
 function handlePaperAction(event) {
   const session = sessions.find((item) => item.id === selectedSessionId);
   const index = Number(event.currentTarget.dataset.index);
+  if (!session || !isPaperActive(session, index)) return;
   if (event.currentTarget.dataset.action === "correct") {
     openTimeEntry(session, index, true);
     return;
