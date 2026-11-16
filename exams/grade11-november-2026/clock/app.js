@@ -102,12 +102,12 @@ function applyStartTime(session, time, target, correct = false, now = Date.now()
     if (prev!==null && prev!==undefined) {
       const ps=state[paperKey(session,prev)]||{}, actual=getActualSessionStart(ps);
       if (!actual) throw new Error("Record the preceding paper using its original reading start.");
-      const earliest=actual+(getReadingMinutes(session.papers[prev][1])+session.papers[prev][2])*60000;
+      const earliest=actual+(getReadingMinutes(session.papers[prev][1], session)+session.papers[prev][2])*60000;
       if (actualSessionStart<earliest) throw new Error("This paper overlaps the preceding paper.");
     }
     for(let j=0;j<session.papers.length;j++) if(isPaperActive(session,j)&&session.papers[j][4]===i) {
       const ns=state[paperKey(session,j)]||{}, next=getActualSessionStart(ns);
-      if(next && actualSessionStart+(getReadingMinutes(session.papers[i][1])+session.papers[i][2])*60000>next)
+      if(next && actualSessionStart+(getReadingMinutes(session.papers[i][1], session)+session.papers[i][2])*60000>next)
         throw new Error("This correction overlaps the following paper.");
     }
   }
@@ -135,7 +135,7 @@ function openTimeEntry(session, target, correct = false) {
     <form id="time-entry-form">
       <h2 id="time-entry-title">${correct ? "Correct start time" : "What time did these papers start?"}</h2>
       <p id="time-entry-context">${formatSessionDate(session.date)} · ${session.label} · ${session.room}<br><strong>${targetLabel}</strong></p>
-      <p id="time-entry-help">Actual exam start · Malaysia time (UTC+8)</p>
+      <p id="time-entry-help">${getActivePapers(session).some(({ paper }) => getReadingMinutes(paper[1], session)) ? "Actual reading start" : "Actual exam start"} · Malaysia time (UTC+8)</p>
       <label for="actual-start-time" class="field-label">Actual start time</label>
       <input id="actual-start-time" type="time" step="1" required value="${timeInputValue(correct ? oldStart : Date.now())}" />
       <p class="time-entry-note">Include seconds if known; otherwise use :00. ${correct ? "Any Finished mark will be kept." : "Already-started and finished papers are kept unchanged."}</p>
@@ -164,7 +164,7 @@ function openTimeEntry(session, target, correct = false) {
     try {
       const start = parseStartTime(session, input.value);
       if (correct && reviewedTime !== input.value) {
-        const duration = (getReadingMinutes(session.papers[target][1]) + session.papers[target][2]) * 60_000;
+        const duration = (getReadingMinutes(session.papers[target][1], session) + session.papers[target][2]) * 60_000;
         confirmation.textContent = `Change the start from ${formatClock(new Date(oldStart))} to ${formatClock(new Date(start))}? The end time changes from ${formatTime(oldStart + duration)} to ${formatTime(start + duration)}. Confirm only if this is the actual start time.`;
         confirmation.hidden = false;
         reviewedTime = input.value;
@@ -183,8 +183,9 @@ function openTimeEntry(session, target, correct = false) {
   input.focus();
 }
 
-function getReadingMinutes(examination) {
-  return 0;
+function getReadingMinutes(examination, session) {
+  const paper = session.papers.find((item) => item[1] === examination);
+  return paper && (session.date > "2026-11-16" || (session.date === "2026-11-16" && paper[0] >= "12:00")) ? 5 : 0;
 }
 
 function openResetConfirmation(session) {
@@ -319,7 +320,7 @@ function getDisplayStatus(state, durationMinutes, readingMinutes, now) {
 function renderPaper(session, paper, index, now) {
   if (!isPaperActive(session, index)) return "";
   const [scheduledStart, name, durationMinutes] = paper;
-  const readingMinutes = getReadingMinutes(name);
+  const readingMinutes = getReadingMinutes(name, session);
   const state = getPaperState(session, index);
   const display = getDisplayStatus(state, durationMinutes, readingMinutes, now);
   const actualSessionStart = getActualSessionStart(state);
@@ -340,7 +341,7 @@ function renderPaper(session, paper, index, now) {
         ${selectable ? `<input class="paper-select" type="checkbox" data-select-index="${index}" aria-labelledby="paper-title-${index}" ${selectedPaperIndices.has(index) ? "checked" : ""}>` : ""}
         <div class="paper-title-copy">
           <h2 id="paper-title-${index}">${name}</h2>
-          <span class="paper-meta">${scheduledStart}–${paper[5]} · ${durationLabel(durationMinutes)}</span>
+          <span class="paper-meta">${scheduledStart}–${paper[5]} · ${durationLabel(durationMinutes)}${readingMinutes ? " + 5 min reading" : ""}</span>
           ${actualSessionStart ? `<button class="correct-time" data-action="correct" data-index="${index}" aria-label="Correct start time for ${name}">Correct start time…</button>` : ""}
         </div>
       </div>
