@@ -341,7 +341,7 @@ function renderPaper(session, paper, index, now) {
         ${selectable ? `<input class="paper-select" type="checkbox" data-select-index="${index}" aria-labelledby="paper-title-${index}" ${selectedPaperIndices.has(index) ? "checked" : ""}>` : ""}
         <div class="paper-title-copy">
           <h2 id="paper-title-${index}">${name}</h2>
-          <span class="paper-meta">${scheduledStart}–${paper[5]} · ${durationLabel(durationMinutes)}${readingMinutes ? " + 5 min reading" : ""}</span>
+          <span class="paper-meta">${paper[5] ? `${scheduledStart}–${paper[5]}` : "Start separately after Paper 2"} · ${durationLabel(durationMinutes)}${readingMinutes ? " + 5 min reading" : ""}</span>
           ${actualSessionStart ? `<button class="correct-time" data-action="correct" data-index="${index}" aria-label="Correct start time for ${name}">Correct start time…</button>` : ""}
         </div>
       </div>
