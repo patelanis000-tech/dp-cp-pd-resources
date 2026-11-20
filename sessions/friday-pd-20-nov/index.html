@@ -1,0 +1,171 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="color-scheme" content="light"><title>DP/CP PD — Unit planning — 20 November 2026</title><style>
+:root{--ib:#07518a;--deep:#094d86;--ink:#22282d;--muted:#646d76;--line:#c8dce9;--pale:#f5f9fc;--pale2:#eef6fb;--white:#fff;--scale:1}
+*{box-sizing:border-box}html,body{margin:0;padding:0;background:#eaf0f4;color:var(--ink);font-family:Arial,Helvetica,sans-serif;overflow:hidden}
+#screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.deck{position:relative;width:1600px;height:900px;transform:scale(var(--scale));transform-origin:center center;flex:none;box-shadow:0 16px 56px rgba(25,53,76,.14);background:white}
+.slide{position:absolute;inset:0;background:var(--white);display:none;overflow:hidden}.slide.active{display:block}
+.topbar{position:absolute;top:24px;left:80px;right:80px;height:100px;display:flex;justify-content:space-between;align-items:center}
+.school-logo{width:245px;height:93px;object-fit:contain;object-position:left center}.ib-logo{width:92px;height:92px;object-fit:contain;object-position:right center}
+.rule{position:absolute;left:80px;right:80px;top:147px;height:2px;background:var(--line)}
+.content{position:absolute;left:80px;right:80px;top:192px;bottom:74px}
+h1{color:var(--ib);font-size:53px;line-height:1.12;letter-spacing:-.9px;font-weight:700;margin:0 0 36px}
+footer{position:absolute;bottom:24px;left:80px;right:80px;color:#87949d;display:flex;justify-content:space-between;font-size:17px;font-weight:400}
+a{color:var(--ib);text-decoration:none}a:hover{text-decoration:underline}
+.cover .content{top:307px}.cover h1{font-size:103px;letter-spacing:-2.6px;margin:0 0 44px}.cover-subtitle{font-size:50px;line-height:1.2;color:#262b31}
+.cover-bottom{margin-top:121px}.cover-dash{display:block;width:95px;height:5px;background:var(--ib);margin:0 0 21px}.cover-bottom p{font-size:29px;line-height:1.38;margin:0;color:#24292f}
+.single-message{font-size:35px;line-height:1.42;max-width:1340px}.single-message p{margin:0 0 18px}.single-message .strong-line{color:var(--ib);font-weight:700;margin-top:16px}
+.announcement{margin-top:45px;background:var(--pale);border-left:5px solid var(--ib);padding:26px 32px 28px}.overline{color:var(--ib);font-size:24px;font-weight:700;margin-bottom:20px}.announce-grid{display:grid;grid-template-columns:1fr 1fr;gap:38px}.announce-grid strong{font-size:27px;display:block;font-weight:700}.announce-grid span{font-size:23px;display:block;margin-top:7px;color:#3f4d55}
+.large-prompt{font-size:35px;line-height:1.25;max-width:1220px;margin:2px 0 26px}.recommendations-list{display:grid;gap:14px}.recommendations-list>div{display:flex;align-items:center;gap:22px;background:var(--pale);border-left:4px solid #7fa5c0;padding:12px 24px;min-height:80px}.number{font-weight:700;font-size:24px;color:var(--ib);width:48px}.recommendations-list strong{font-size:27px;display:block;line-height:1.1}.recommendations-list small{display:block;font-size:19px;color:#55616a;margin-top:6px}.primary-link{display:inline-block;margin-top:22px;background:var(--ib);color:#fff;font-size:24px;padding:14px 25px;border-radius:2px;font-weight:700}.primary-link:hover{text-decoration:none;background:#093b63}.subtle-note{font-size:18px;color:#6c7379;margin-top:16px}
+.why-grid{display:grid;grid-template-columns:minmax(0,1fr) 540px;gap:60px;height:590px}.why-copy{display:flex;flex-direction:column;justify-content:flex-start;gap:30px}.reason{display:flex;gap:26px;align-items:flex-start}.reason-no{font-size:23px;color:var(--ib);font-weight:700;line-height:1.45;padding-top:3px}.reason strong{font-size:33px;line-height:1.2;color:var(--deep)}.reason p{font-size:26px;line-height:1.35;margin:8px 0 0;max-width:720px}.why-foot{border-top:2px solid var(--line);padding-top:20px;color:#4b5861;font-size:23px;line-height:1.37;margin-top:5px;max-width:750px}
+.concierge-figure{margin:0;text-align:center;display:flex;flex-direction:column;justify-content:flex-start;align-items:center}.concierge-figure img{height:565px;max-width:100%;object-fit:contain;border:1px solid #e1e4e6;box-shadow:0 2px 8px rgba(0,0,0,.06)}.concierge-figure figcaption{font-size:17px;color:#6a7680;margin-top:8px}
+.six-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:46px;row-gap:17px}.standard{display:flex;gap:22px;min-height:122px;padding:19px 24px;background:var(--pale);border-top:4px solid #a3c5dc}.standard>span{font-size:25px;color:var(--ib);font-weight:700;min-width:45px}.standard strong{font-size:29px;color:var(--ib);line-height:1.25}.standard p{margin:8px 0 0;font-size:22px;line-height:1.3}.statement-line{font-size:24px;color:#344b5b;line-height:1.35;margin-top:26px;padding:14px 22px;border-left:5px solid var(--ib);background:var(--pale2)}
+.sample-kicker{font-size:25px;color:#596873;margin-top:-21px;margin-bottom:26px}.example-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.example-item{min-height:204px;padding:26px 28px 21px;border-top:5px solid var(--ib);background:var(--pale)}.example-label{text-transform:uppercase;letter-spacing:2px;font-size:18px;color:#647584;display:block;margin-bottom:14px;font-weight:700}.example-item strong{font-size:29px;line-height:1.22;display:block;color:var(--deep)}.example-item p{font-size:23px;line-height:1.36;margin:10px 0 0}.example-item small{font-size:18px;display:block;margin-top:12px;color:#667683}.source-line{font-size:23px;margin-top:25px}
+.three-columns{display:grid;grid-template-columns:repeat(3,1fr);gap:27px}.focus-column{height:398px;padding:30px 28px;background:var(--pale);border-top:5px solid var(--ib)}.focus-top{font-weight:700;font-size:21px;color:#5e7589;letter-spacing:.4px;margin-bottom:25px}.focus-column strong{font-size:32px;line-height:1.24;color:var(--deep);display:block;min-height:80px}.focus-column p{font-size:24px;line-height:1.43;margin-top:24px}
+.toddle-layout{display:grid;grid-template-columns:1fr 420px;gap:56px}.toddle-flow{display:grid;gap:17px}.toddle-flow>div{display:flex;align-items:center;font-size:28px;border-bottom:2px solid #d7e4ed;padding:5px 0 14px;line-height:1.24}.toddle-flow span{font-size:25px;font-weight:700;color:var(--ib);width:68px;flex:none}.toddle-flow b{color:var(--deep)}.toddle-side{background:var(--pale);padding:36px 34px;border-top:5px solid var(--ib)}.side-title{font-size:28px;color:var(--ib);font-weight:700}.toddle-side p{font-size:24px;line-height:1.42}.quiet-link{display:inline-block;font-size:23px;margin-top:10px;font-weight:700}
+.activity-grid{display:grid;grid-template-columns:340px 1fr;gap:54px}.activity-time{background:var(--pale);padding:25px 40px 30px;border-top:5px solid var(--ib);text-align:center}.minutes{font-size:170px;line-height:1;color:var(--ib);font-weight:700}.min-label{font-size:42px;color:var(--ib);font-weight:700;margin-top:-4px}.activity-time p{font-size:28px;color:#344b5b;margin-top:40px}.activity-steps{display:grid;gap:18px}.activity-steps>div{display:flex;align-items:center;gap:28px;font-size:26px;line-height:1.3;border-bottom:2px solid #dce6ed;padding:7px 0 12px}.activity-steps span{color:var(--ib);font-size:24px;font-weight:700;flex:none}.activity-footer{font-size:24px;line-height:1.3;margin-top:30px;border-left:5px solid var(--ib);padding:12px 24px;background:var(--pale)}
+#controls{position:fixed;bottom:13px;right:16px;display:flex;gap:7px;z-index:3;opacity:0;transition:opacity .2s}#controls:hover,#controls:focus-within{opacity:1}#controls button{border:1px solid #a4b8c9;background:#fff;color:var(--ib);font-size:15px;padding:5px 9px;border-radius:3px;cursor:pointer}#controls button:focus-visible{outline:3px solid var(--ib)}
+#help,#notes{display:none;position:fixed;z-index:6;left:50%;transform:translateX(-50%);bottom:36px;width:min(850px,90vw);background:#fff;border:1px solid #9db7c8;box-shadow:0 15px 46px rgba(24,47,63,.25);border-top:5px solid var(--ib);padding:20px 28px;font-size:17px;line-height:1.6}#help.show,#notes.show{display:block}#notes{max-height:55vh;overflow:auto}
+@media(max-width:700px){#controls{opacity:.7}}
+@media print{
+html,body{overflow:visible!important;background:white!important;width:100%;height:auto}#screen{position:static;display:block;overflow:visible}.deck{transform:none!important;width:1600px;height:auto;box-shadow:none!important}.slide,.slide.active{position:relative!important;width:1600px;height:900px;display:block!important;page-break-after:always;break-after:page}#controls,#help,#notes{display:none!important}}
+@page{size:16in 9in;margin:0}
+</style></head><body><main id="screen"><div class="deck"><section class="slide cover" aria-roledescription="slide" data-notes="Goal: agree minimum expectations, show a real unit from Toddle, and give teachers protected planning time.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Unit planning</h1>
+<div class="cover-subtitle">Planning for learning in the DP/CP</div>
+<div class="cover-bottom"><span class="cover-dash"></span><p>Friday 20 November 2026<br>40-minute session</p></div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Opening housekeeping, 2–3 minutes. Acknowledge teachers have marking and report cards. Newsletter contributions due Fri 27 Nov, final issue published Wed 2 Dec.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Thank you</h1>
+<div class="single-message">
+<p>Thank you for preparing examinations and supporting invigilation.</p>
+<p>Marking, reports and the final weeks of the year are still ahead.</p>
+<p class="strong-line">Nearly there. Thank you for everything you are doing.</p>
+</div>
+<div class="announcement">
+<div class="overline">Final newsletter of 2026</div>
+<div class="announce-grid"><div><strong>Friday 27 November</strong><span>Send me contributions by email.</span></div><div><strong>Wednesday 2 December</strong><span>Newsletter publication.</span></div></div>
+</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Allow about 2 minutes. This is a confidential school workflow. Avoid discussing individual students on screen. The supplied school Sheet link was not accessible through this connector, so link is preserved exactly, without claiming verified edit access.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>2027 DP subject recommendations</h1>
+<div class="large-prompt">Please review the students selecting your course for next year.</div>
+<div class="recommendations-list">
+<div><span class="number">01</span><span><strong>Recommended</strong><small>Appropriate course and level</small></span></div>
+<div><span class="number">02</span><span><strong>Recommended with reservation</strong><small>Give a brief academic reason and support need</small></span></div>
+<div><span class="number">03</span><span><strong>Alternative level or course advised</strong><small>Recommend SL rather than HL, or another course where appropriate</small></span></div>
+</div>
+<a class="primary-link" href="https://docs.google.com/spreadsheets/d/1E4ot_Erd4NY_jCOlg2xHcPsFyKbhZ8_tLboWQTmlo8M/edit?gid=1051961066#gid=1051961066" target="_blank" rel="noopener noreferrer">Open DP recommendations sheet <span aria-hidden="true">↗</span></a>
+<div class="subtle-note">Teacher advice informs placement decisions; it does not decide placement. Keep individual feedback confidential.</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide image-slide" aria-roledescription="slide" data-notes="Reference image provided by coordinator. The image displays each of the six DP subject groups and a separate TOK upload. It permits a course outline or a unit plan, and asks for evidence of TOK integrated into the course. It does not mean every unit must contain a contrived TOK activity.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Why do we unit plan?</h1>
+<div class="why-grid">
+<div class="why-copy">
+<div class="reason"><span class="reason-no">01</span><div><strong>Clarity</strong><p>What should students know, understand and be able to do?</p></div></div>
+<div class="reason"><span class="reason-no">02</span><div><strong>Coherence</strong><p>How do teaching, inquiry and assessment connect?</p></div></div>
+<div class="reason"><span class="reason-no">03</span><div><strong>Evidence</strong><p>How can we show that our curriculum meets IB expectations?</p></div></div>
+<div class="why-foot">IB Concierge asks for curriculum documentation from each DP subject group, including how TOK is integrated into the course.</div>
+</div>
+<figure class="concierge-figure"><img src="assets/concierge-curriculum.png" alt="Screenshot of IB Concierge curriculum documentation submission requirements for the six DP subject groups and TOK"/><figcaption>School's IB Concierge submission screen</figcaption></figure>
+</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="These are our proposed school expectations. The IB does not mandate this exact list or template. TOK integration should be meaningful across the subject/course; not every individual lesson needs an activity. Reflection follows teaching, not before.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Six expectations for a unit plan</h1>
+<div class="six-grid">
+<div class="standard"><span>01</span><div><strong>Syllabus alignment</strong><p>Content, skills and objectives</p></div></div>
+<div class="standard"><span>02</span><div><strong>Conceptual understanding</strong><p>Big ideas and inquiry questions</p></div></div>
+<div class="standard"><span>03</span><div><strong>Assessment</strong><p>Evidence, checks and feedback</p></div></div>
+<div class="standard"><span>04</span><div><strong>Teaching and learning</strong><p>Learning sequence and differentiation</p></div></div>
+<div class="standard"><span>05</span><div><strong>IB connections</strong><p>ATL development; meaningful TOK in DP subjects</p></div></div>
+<div class="standard"><span>06</span><div><strong>Reflection</strong><p>What worked, what changed, what next?</p></div></div>
+</div>
+<div class="statement-line">A good unit plan should guide teaching — not simply complete a set of fields.</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Use a real plan already in the coordinator’s Toddle: 6. Mathematical Modelling, DP27 Mathematics AI. Show specific syllabus objectives, concept of modelling as approximation, conceptual inquiry question, and final mixed modelling task. The unit hours field appears blank in Toddle—do not present this as a perfect finished exemplar.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Worked example: Mathematical Modelling</h1>
+<div class="sample-kicker">Existing Toddle unit · Mathematics: AI SL/HL · Unit 6</div>
+<div class="example-grid">
+<div class="example-item"><span class="example-label">Syllabus</span><strong>SL 2.5–2.6</strong><p>Modelling functions, choosing and evaluating models</p><small>HL extends to logarithmic, logistic and piecewise models</small></div>
+<div class="example-item"><span class="example-label">Concept</span><strong>Models represent reality</strong><p>They simplify, approximate and depend on assumptions</p></div>
+<div class="example-item"><span class="example-label">Inquiry</span><strong>To what extent does a mathematical model represent reality?</strong></div>
+<div class="example-item"><span class="example-label">Assessment</span><strong>Mixed modelling task</strong><p>Choose, interpret, justify and evaluate a model</p></div>
+</div>
+<div class="source-line"><a href="https://web.toddleapp.com/platform/6345/courses/329743147175351381/unitPlans/411219317036785774/inquiryAndAction" target="_blank" rel="noopener noreferrer">Open the existing Toddle unit ↗</a></div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Use the real Toddle language: problem-first model selection, confidence calibration, residuals and assumptions, and “To what extent does a mathematical model represent reality?” Clarify that TOK requires a genuine inquiry into knowledge, not merely ticking Mathematics as an area of knowledge.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Worked example: from plan to learning</h1>
+<div class="three-columns">
+<div class="focus-column"><div class="focus-top">Teaching &amp; learning</div><strong>Explore → model → test → refine</strong><p>Students compare possible models, fit them with technology, interpret results and question their assumptions.</p></div>
+<div class="focus-column"><div class="focus-top">ATL &amp; differentiation</div><strong>Make thinking visible</strong><p>Explain model choices, check confidence, analyse errors and use scaffolds or HL extensions as needed.</p></div>
+<div class="focus-column"><div class="focus-top">TOK connection</div><strong>What counts as a reliable model?</strong><p>Discuss evidence, truth and the limits of claims based on mathematical models.</p></div>
+</div>
+<div class="statement-line">The connection matters more than the number of boxes selected in Toddle.</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Suggested live demo only 4–5 minutes. Reuse the existing unit read-only, then demonstrate the navigation to the Intermediate DP Planner if useful. Do not edit the coordinator’s existing plan during this presentation unless explicitly intended.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Toddle: show the planning process</h1>
+<div class="toddle-layout">
+<div class="toddle-flow">
+<div><span>1</span><div>Choose <b>Intermediate DP Planner</b></div></div>
+<div><span>2</span>Select the syllabus and learning goals</div>
+<div><span>3</span>Write a conceptual inquiry question</div>
+<div><span>4</span>Plan assessment, learning and differentiation</div>
+<div><span>5</span>Explain a genuine TOK/ATL connection</div>
+</div>
+<div class="toddle-side"><div class="side-title">Live demonstration</div><p>Use the existing Mathematical Modelling unit to illustrate the fields.</p><p>Show the process; do not attempt to build an entire unit live.</p><a class="quiet-link" href="https://web.toddleapp.com/platform/6345/courses/329743147175351381/unitPlans/411219317036785774/inquiryAndAction" target="_blank" rel="noopener noreferrer">Open in Toddle ↗</a></div>
+</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section><section class="slide " aria-roledescription="slide" data-notes="Teacher work time: 15 minutes. The goal is a meaningful start, not a completed unit in one session. One reviewed unit per teacher and the 27 November peer review were previously proposals; do not frame those as formally confirmed deadlines.">
+    <header class="topbar"><img class="school-logo" src="assets/sunway-logo.png" alt="Sunway International Schools logo"/><img class="ib-logo" src="assets/ib-logo.png" alt="IB World School logo"/></header>
+    <div class="rule"></div>
+    <div class="content"><h1>Your turn: begin one unit</h1>
+<div class="activity-grid">
+<div class="activity-time"><div class="minutes">15</div><div class="min-label">minutes</div><p>Work in Toddle</p></div>
+<div class="activity-steps">
+<div><span>01</span>Choose a unit you will teach.</div>
+<div><span>02</span>Map the syllabus and intended understanding.</div>
+<div><span>03</span>Write one useful inquiry question.</div>
+<div><span>04</span>Plan assessment and first learning experiences.</div>
+<div><span>05</span>Identify an ATL focus and a meaningful TOK connection where applicable.</div>
+</div>
+</div>
+<div class="activity-footer">For follow-up: complete one unit plan in Toddle for review. Reflect after teaching.</div>
+</div>
+    <footer><span>DP/CP Professional Development · 20 November 2026</span><span class="pagenum"></span></footer>
+    </section></div></main><div id="controls"><button id="prev" aria-label="Previous slide">◀</button><button id="next" aria-label="Next slide">▶</button><button id="notesBtn" aria-label="Toggle speaker notes">Notes</button><button id="helpBtn" aria-label="Keyboard help">?</button></div><aside id="help">Use ← and → to change slides; Home/End to jump; N for speaker notes; Esc to close help. Use the browser's full-screen mode (F11) to present. Links open in a new tab.</aside><aside id="notes" aria-live="polite"></aside><script>
+(()=>{
+const deck=document.querySelector('.deck');const slides=[...document.querySelectorAll('.slide')];let index=0;
+function fit(){const x=window.innerWidth/1600,y=window.innerHeight/900;deck.style.setProperty('--scale',Math.min(x,y).toFixed(5))}
+function go(n){index=Math.max(0,Math.min(slides.length-1,n));slides.forEach((s,i)=>{s.classList.toggle('active',i===index);s.setAttribute('aria-hidden',i!==index?'true':'false');s.querySelector('.pagenum').textContent=(i+1)+' / '+slides.length});document.getElementById('notes').classList.remove('show');if(location.hash!=='#'+(index+1))history.replaceState(null,'','#'+(index+1))}
+const init=parseInt(location.hash.replace('#',''),10);if(Number.isFinite(init)&&init>=1&&init<=slides.length)index=init-1;
+function showNotes(){const box=document.getElementById('notes');box.textContent=slides[index].getAttribute('data-notes')||'No speaker notes for this slide.';box.classList.toggle('show')}
+window.addEventListener('resize',fit);window.addEventListener('hashchange',()=>{let n=parseInt(location.hash.slice(1),10);if(n>=1&&n<=slides.length)go(n-1)});
+document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement?.tagName))return;if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(index+1)}else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(index-1)}else if(e.key==='Home'){e.preventDefault();go(0)}else if(e.key==='End'){e.preventDefault();go(slides.length-1)}else if(e.key.toLowerCase()==='n'){showNotes()}else if(e.key==='Escape'){document.getElementById('notes').classList.remove('show');document.getElementById('help').classList.remove('show')}});
+document.getElementById('prev').onclick=()=>go(index-1);document.getElementById('next').onclick=()=>go(index+1);document.getElementById('helpBtn').onclick=()=>document.getElementById('help').classList.toggle('show');document.getElementById('notesBtn').onclick=showNotes;
+let startX=null;document.addEventListener('touchstart',e=>startX=e.touches[0]?.clientX,{passive:true});document.addEventListener('touchend',e=>{if(startX==null)return;const dx=e.changedTouches[0].clientX-startX;if(Math.abs(dx)>65)go(index+(dx<0?1:-1));startX=null},{passive:true});
+fit();go(index);
+})();
+</script></body></html>
